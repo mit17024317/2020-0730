@@ -15,14 +15,15 @@ class modelInterface(ABC):
 class GPR(modelInterface):
 
     def __init__(self, sampleX: list, sampleY: list):
-        kernel = GPy.kern.RBF(1)+GPy.kern.Matern32(1)
-        self.model = GPy.models.GPRegression(sampleX[:, None], sampleY[:, None], kernel=kernel)
+        DIM = sampleX[0].size
+        kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
+        self.model = GPy.models.GPRegression(sampleX, sampleY[:, None], kernel=kernel)
         self.model.optimize()
 
     def getPredictValue(self, x: list):
         return [val[0] for val in
                 self.model.predict_quantiles(
-                    x[:, None],
+                    x,
                     quantiles=(2.5, 50, 97.5)
                 )[1]]
 
@@ -30,29 +31,34 @@ class GPR(modelInterface):
 class FuzzyCM(modelInterface):
 
     def __init__(self, sampleX: list, sampleY: list):
-        kernel = GPy.kern.RBF(1)+GPy.kern.Matern32(1)
-        self.model = GPy.models.GPRegression(sampleX[:, None], sampleY[:, None], kernel=kernel)
+        DIM = sampleX[0].size
+        kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
+        self.model = GPy.models.GPRegression(sampleX, sampleY[:, None], kernel=kernel)
         self.model.optimize()
-        cntr, u, u0, d, jm, p, fpc = cmeans(np.array([sampleX]), 1, 3.0,  0.01, 1000)
-        print("center:",cntr)
+        cntr, u, u0, d, jm, p, fpc = cmeans(sampleX.T, 1, 3.0,  0.01, 1000)
+        print("center:", cntr)
 
     def getPredictValue(self, x: list):
         return [val[0] for val in
                 self.model.predict_quantiles(
-                    x[:, None],
+                    x,
                     quantiles=(2.5, 50, 97.5)
                 )[1]]
 
 
 if __name__ == "__main__":
+    # debug parameter
+    DIM = 5
+    SIZE = 10
+
     # test function
     def f(x: float):
-        return np.sin(np.sqrt(x)*10.0)
+        sum = np.sum(x)
+        return np.sin(np.sqrt(sum)*10.0)
 
     print("-- create model-- ")
     # create sample point
-    SIZE = 10
-    X = np.array([s[0] for s in lhs(1, SIZE)])
+    X = np.array([[s[i] for i in range(DIM)] for s in lhs(DIM, SIZE)])
     Y = np.array([f(i) for i in X])
     print(X)
 
@@ -60,22 +66,23 @@ if __name__ == "__main__":
     MODEL = GPR(X, Y)
     MODEL_FUZZY = FuzzyCM(X, Y)
 
-    # create sample point for debug
-    ALL_X = np.linspace(0.0, 1.0, 500)
-    ALL_Y_TRUE = f(ALL_X)
-    ALL_Y_GPR = MODEL.getPredictValue(ALL_X)
-    ALL_Y_FUZZY = MODEL_FUZZY.getPredictValue(ALL_X)
+    if DIM == 1:
+        # create sample point for debug
+        ALL_X = np.linspace(0.0, 1.0, 500)[:, None]
+        ALL_Y_TRUE = [f(x) for x in ALL_X]
+        ALL_Y_GPR = MODEL.getPredictValue(ALL_X)
+        ALL_Y_FUZZY = MODEL_FUZZY.getPredictValue(ALL_X)
 
-    print("-- create figure-- ")
-    # create model figure
-    plt.plot(ALL_X, ALL_Y_TRUE, c="r", label='function')
-    plt.plot(ALL_X, ALL_Y_GPR, c="b", label='GPR')
-    plt.plot(ALL_X, ALL_Y_FUZZY, c="y", label='Fuzzy CM')
-    plt.plot(X, Y, 'o', marker=".", markersize=10, c="black", label="sample point")
-    plt.legend()
+        print("-- create figure-- ")
+        # create model figure
+        plt.plot(ALL_X, ALL_Y_TRUE, c="r", label='function')
+        plt.plot(ALL_X, ALL_Y_GPR, c="b", label='GPR')
+        plt.plot(ALL_X, ALL_Y_FUZZY, c="y", label='Fuzzy CM')
+        plt.plot(X, Y, 'o', marker=".", markersize=10, c="black", label="sample point")
+        plt.legend()
 
-    plt.xlabel("X")
-    plt.ylabel("Y")
+        plt.xlabel("X")
+        plt.ylabel("Y")
 
-    plt.savefig("./fig.png")
+        plt.savefig("./fig.png")
     print("--- finish ---")
