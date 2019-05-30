@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import GPy
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from pyDOE import lhs
 
 
 def f(x):
-    return x**2+np.sin(x)
+    return x-np.cos(x)
 
 
 if __name__ == "__main__":
@@ -14,9 +14,9 @@ if __name__ == "__main__":
     kernel = GPy.kern.RBF(1)
     # kernel = GPy.kern.RBF(1) + GPy.kern.Bias(1) + GPy.kern.Linear(1)
 
-    x = np.array([i for i in range(1, 12)])
+    x = np.array([s[0] for s in lhs(1, 3, "c")])
     y = np.array([f(i) for i in x])
-    print(x, y)
+    print(x, y, end='\n')
 
     model = GPy.models.GPRegression(x[:, None], y[:, None], kernel=kernel)
     model.optimize()
