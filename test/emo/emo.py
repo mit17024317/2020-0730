@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-from platypus import MOEAD, Problem, Real
-
-
-def schaffer(x):
-    return [x[0]**2, (x[0]-2)**2]
+from platypus import MOEAD
+from platypus.indicators import Hypervolume
+from platypus.problems import DTLZ2
 
 
 if __name__ == "__main__":
-    problem = Problem(1, 2)
-    problem.types[:] = Real(-10, 10)
-    problem.function = schaffer
 
-    algorithm = MOEAD(problem)
-    algorithm.run(10000)
+    problem = DTLZ2(3)
+
+    hv = Hypervolume(minimum=[0,0,0], maximum=[1,1,1])
+    for i in range(1,6):
+        print("-- ", i, "th run --")
+        algorithm = MOEAD(problem)
+        algorithm.run(200)
+        print(hv(algorithm.result))
+
+
