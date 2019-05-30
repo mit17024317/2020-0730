@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 import GPy
 import numpy as np
+from skfuzzy.cluster import cmeans
 import matplotlib.pyplot as plt
 from pyDOE import lhs
 
@@ -32,6 +33,8 @@ class FuzzyCM(modelInterface):
         kernel = GPy.kern.RBF(1)+GPy.kern.Matern32(1)
         self.model = GPy.models.GPRegression(sampleX[:, None], sampleY[:, None], kernel=kernel)
         self.model.optimize()
+        cntr, u, u0, d, jm, p, fpc = cmeans(np.array([sampleX]), 1, 3.0,  0.01, 1000)
+        print("center:",cntr)
 
     def getPredictValue(self, x: list):
         return [val[0] for val in
