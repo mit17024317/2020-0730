@@ -5,14 +5,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def f(x):
+    return x**2+np.sin(x)
+
+
 if __name__ == "__main__":
 
     kernel = GPy.kern.RBF(1)
     # kernel = GPy.kern.RBF(1) + GPy.kern.Bias(1) + GPy.kern.Linear(1)
 
-    d = pd.read_csv('http://kasugano.sakura.ne.jp/'
-                    'images/2016/20161112/data-GPbook-Fig2_05.txt')
-    model = GPy.models.GPRegression(d.X[:, None], d.Y[:, None], kernel=kernel)
+    x = np.array([i for i in range(1, 12)])
+    y = np.array([f(i) for i in x])
+    print(x, y)
+
+    model = GPy.models.GPRegression(x[:, None], y[:, None], kernel=kernel)
     model.optimize()
     model.plot()
     plt.savefig('./fig.png')
