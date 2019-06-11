@@ -35,7 +35,6 @@ class FuzzyCM(modelInterface):
         # clusterMaxSize
         N = min(100, len(sampleX))
         clusterNum = 1 if N < 50 else 1 + int(len(sampleX) / (N - 10))
-        print(N, clusterNum)
         DIM = sampleX[0].size
 
         # data, m, c, error, maxIter, init, seed
