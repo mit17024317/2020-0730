@@ -47,7 +47,7 @@ class FuzzyCM(modelInterface):
         # data, m, c, error, maxIter, init, seed
         # center, result, firstResult, distance?, ?, loopNum, ?
         self.models = []
-        cntr, u, u0, d, jm, p, fpc = cmeans(sampleX.T, 3, 3.0,  0.01, 1000)
+        cntr, u, u0, d, jm, p, fpc = cmeans(sampleX.T, clusterNum, 3.0,  0.01, 1000)
         for c, x in zip(cntr, u):
             kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
             arg = np.argsort(x)[::-1]
@@ -84,8 +84,8 @@ class FuzzyCM(modelInterface):
 
 if __name__ == "__main__":
     # debug parameter
-    DIM = 1
-    SIZE = 500
+    DIM = 10
+    SIZE = 1000
 
     # test function
     def f(x: float):
