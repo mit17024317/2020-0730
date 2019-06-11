@@ -5,6 +5,7 @@ import numpy as np
 from skfuzzy.cluster import cmeans
 import matplotlib.pyplot as plt
 from pyDOE import lhs
+import time
 
 
 class modelInterface(ABC):
@@ -32,7 +33,7 @@ class FuzzyCM(modelInterface):
 
     def __init__(self, sampleX: list, sampleY: list):
         # clusterMaxSize
-        N = min(50, len(sampleX))
+        N = min(100, len(sampleX))
         clusterNum = 1 if N < 50 else 1 + int(len(sampleX) / (N - 10))
         print(N, clusterNum)
         DIM = sampleX[0].size
@@ -69,13 +70,13 @@ class FuzzyCM(modelInterface):
                 )[1]]
                for itr in range(len(self.models))]
         val = [all[self.__getCloseCenter(x[i])][i] for i in range(len(x))]
-        return val 
-        
+        return val
+
 
 if __name__ == "__main__":
     # debug parameter
     DIM = 1
-    SIZE = 4
+    SIZE = 500
 
     # test function
     def f(x: float):
@@ -89,20 +90,25 @@ if __name__ == "__main__":
     # rint(X)
 
     # create model
-    MODEL = GPR(X, Y)
+    s1 = time.time()
+    # MODEL = GPR(X, Y)
+    s2 = time.time()
     MODEL_FUZZY = FuzzyCM(X, Y)
+    s3 = time.time()
+    print("GPR:\t{0}ms".format(1000*(s2-s1)),
+          "FuzzyCM:\t{0}ms".format(1000*(s3-s2)), sep="\n")
 
     if DIM == 1:
         # create sample point for debug
         ALL_X = np.linspace(0.0, 1.0, 500)[:, None]
         ALL_Y_TRUE = [f(x) for x in ALL_X]
-        ALL_Y_GPR = MODEL.getPredictValue(ALL_X)
+        # ALL_Y_GPR = MODEL.getPredictValue(ALL_X)
         ALL_Y_FUZZY = MODEL_FUZZY.getPredictValue(ALL_X)
 
         print("-- create figure-- ")
         # create model figure
         plt.plot(ALL_X, ALL_Y_TRUE, c="r", label='function')
-        plt.plot(ALL_X, ALL_Y_GPR, c="b", label='GPR')
+        # plt.plot(ALL_X, ALL_Y_GPR, c="b", label='GPR')
         plt.plot(ALL_X, ALL_Y_FUZZY, c="y", label='Fuzzy CM')
         plt.plot(X, Y, 'o', marker=".", markersize=10, c="black", label="sample point")
         plt.legend()
