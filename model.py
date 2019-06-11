@@ -31,6 +31,10 @@ class GPR(modelInterface):
 class FuzzyCM(modelInterface):
 
     def __init__(self, sampleX: list, sampleY: list):
+        # clusterMaxSize
+        N = min(50, len(sampleX))
+        clusterNum = 1 if N < 50 else 1 + int(len(sampleX) / (N - 10))
+        print(N, clusterNum)
         DIM = sampleX[0].size
 
         # data, m, c, error, maxIter, init, seed
@@ -40,8 +44,8 @@ class FuzzyCM(modelInterface):
         for c, x in zip(cntr, u):
             kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
             arg = np.argsort(x)[::-1]
-            X = np.array([sampleX[t] for t in arg[:10]])
-            Y = np.array([sampleY[t] for t in arg[:10]])
+            X = np.array([sampleX[t] for t in arg[:N]])
+            Y = np.array([sampleY[t] for t in arg[:N]])
             mdl = GPy.models.GPRegression(X, Y[:, None], kernel=kernel)
             mdl.optimize()
             self.models.append({"m": mdl, "c": c})
@@ -71,7 +75,7 @@ class FuzzyCM(modelInterface):
 if __name__ == "__main__":
     # debug parameter
     DIM = 1
-    SIZE = 30 
+    SIZE = 4
 
     # test function
     def f(x: float):
