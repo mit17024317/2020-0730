@@ -32,15 +32,23 @@ class FuzzyCM(modelInterface):
 
     def __init__(self, sampleX: list, sampleY: list):
         DIM = sampleX[0].size
-        kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
-        self.model = GPy.models.GPRegression(sampleX, sampleY[:, None], kernel=kernel)
-        self.model.optimize()
-        cntr, u, u0, d, jm, p, fpc = cmeans(sampleX.T, 1, 3.0,  0.01, 1000)
-        print("center:", cntr)
+
+        # data, m, c, error, maxIter, init, seed
+        # center, result, firstResult, distance?, ?, loopNum, ?
+        self.models = []
+        cntr, u, u0, d, jm, p, fpc = cmeans(sampleX.T, 3, 3.0,  0.01, 1000)
+        for c, x in zip(cntr, u):
+            kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
+            arg = np.argsort(x)[::-1]
+            X = np.array([sampleX[t] for t in arg[:10]])
+            Y = np.array([sampleY[t] for t in arg[:10]])
+            mdl = GPy.models.GPRegression(X, Y[:, None], kernel=kernel)
+            mdl.optimize()
+            self.models.append({"m": mdl, "c": c})
 
     def getPredictValue(self, x: list):
         return [val[0] for val in
-                self.model.predict_quantiles(
+                self.models[0]["m"].predict_quantiles(
                     x,
                     quantiles=(2.5, 50, 97.5)
                 )[1]]
@@ -48,8 +56,8 @@ class FuzzyCM(modelInterface):
 
 if __name__ == "__main__":
     # debug parameter
-    DIM = 5
-    SIZE = 10
+    DIM = 1
+    SIZE = 30 
 
     # test function
     def f(x: float):
@@ -60,7 +68,7 @@ if __name__ == "__main__":
     # create sample point
     X = np.array([[s[i] for i in range(DIM)] for s in lhs(DIM, SIZE)])
     Y = np.array([f(i) for i in X])
-    print(X)
+    # rint(X)
 
     # create model
     MODEL = GPR(X, Y)
