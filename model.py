@@ -46,13 +46,27 @@ class FuzzyCM(modelInterface):
             mdl.optimize()
             self.models.append({"m": mdl, "c": c})
 
+    def __getCloseCenter(self, x: list):
+        itr = 0
+        min = 1e100
+        for i, mdl in enumerate(self.models):
+            cntr = mdl["c"]
+            dis = np.linalg.norm(cntr-x)
+            if dis < min:
+                min = dis
+                itr = i
+        return itr
+
     def getPredictValue(self, x: list):
-        return [val[0] for val in
-                self.models[0]["m"].predict_quantiles(
+        all = [[val[0] for val in
+                self.models[itr]["m"].predict_quantiles(
                     x,
                     quantiles=(2.5, 50, 97.5)
                 )[1]]
-
+               for itr in range(len(self.models))]
+        val = [all[self.__getCloseCenter(x[i])][i] for i in range(len(x))]
+        return val 
+        
 
 if __name__ == "__main__":
     # debug parameter
