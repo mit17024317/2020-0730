@@ -10,7 +10,10 @@ import time
 
 class modelInterface(ABC):
     @abstractmethod
-    def getPredictValue(self, x: float):
+    def getPredictValue(self, x: list):
+        pass
+    @abstractmethod
+    def getPredict(self, x: float):
         pass
 
 class GPR(modelInterface):
@@ -21,12 +24,16 @@ class GPR(modelInterface):
         self.model = GPy.models.GPRegression(sampleX, sampleY[:, None], kernel=kernel)
         self.model.optimize()
 
-    def getPredictValue(self, x: list):
+    def getPredictValue(self, x: list, a=2.5, b=50, c=97.5):
         return [val[0] for val in
                 self.model.predict_quantiles(
                     x,
-                    quantiles=(2.5, 50, 97.5)
+                    quantiles=(a, b, c)
                 )[1]]
+
+    def getPredict(self, x: float):
+        return self.model.predict(np.array([x]))
+
 
 
 class FuzzyCM(modelInterface):
@@ -61,15 +68,18 @@ class FuzzyCM(modelInterface):
                 itr = i
         return itr
 
-    def getPredictValue(self, x: list):
+    def getPredictValue(self, x: list, a=2.5, b=50, c=97.5):
         all = [[val[0] for val in
                 self.models[itr]["m"].predict_quantiles(
                     x,
-                    quantiles=(2.5, 50, 97.5)
+                    quantiles=(a, b, c)
                 )[1]]
                for itr in range(len(self.models))]
         val = [all[self.__getCloseCenter(x[i])][i] for i in range(len(x))]
         return val
+
+    def getPredict(self, x: float):
+        return self.models[self.__getCloseCenter(x)]['m'].predict(np.array([x]))
 
 
 if __name__ == "__main__":
