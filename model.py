@@ -85,35 +85,43 @@ class FuzzyCM(modelInterface):
 class GroupingModel(modelInterface):
 
     def __init__(self, sampleX: list, sampleY: list):
-        lst = self.__grouping(len(sampleX[0]))
-        print(lst)
-        DIM = sampleX[0].size
-        kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
-        self.model = GPy.models.GPRegression(sampleX, sampleY[:, None], kernel=kernel)
-        self.model.optimize()
+        self.models = []
+        self.__createGroupModel(sampleX, sampleY)
+
+    def __createGroupModel(self, sampleX: list, sampleY: list):
+        group = self.__grouping(len(sampleX[0]))
+        size = len(sampleX)
+        GsampleX = [[[sampleX[i][p]
+                    for p in g]
+                    for i in range(size)]
+                    for g in group]
+        self.models = [FuzzyCM(np.array(GsampleX[g]), sampleY) for g in range(len(group))]
 
     def __grouping(self, size):
         lst = random.sample([x for x in range(size)], size)
-        size = len(lst)/5
+        if size < 5:
+            return [np.array(lst)]
+        size = (len(lst)+4)/5
         lst = np.array_split(lst, size)
         return lst
 
-
     def getPredictValue(self, x: list, a=2.5, b=50, c=97.5):
-        return [val[0] for val in
-                self.model.predict_quantiles(
-                    x,
-                    quantiles=(a, b, c)
-                )[1]]
+        sum = np.array([0.0 for i in range(len(x))])
+        for model in self.models:
+            sum += np.array(model.getPredictValue(x))
+        return list(sum/len(self.models))
 
     def getPredict(self, x: float):
-        return self.model.predict(np.array([x]))
+        sum = np.array([0.0 for i in range(len(x))])
+        for model in self.models:
+            sum += np.array(model.getPredict(x))
+        return list(sum/len(self.models))
 
 
 if __name__ == "__main__":
     # debug parameter
     DIM = 10
-    SIZE = 30 
+    SIZE = 30
 
     # test function
     def f(x: float):
