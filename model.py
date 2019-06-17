@@ -6,7 +6,7 @@ from skfuzzy.cluster import cmeans
 import matplotlib.pyplot as plt
 from pyDOE import lhs
 import time
-
+import random
 
 class modelInterface(ABC):
     @abstractmethod
@@ -82,10 +82,46 @@ class FuzzyCM(modelInterface):
         return self.models[self.__getCloseCenter(x)]['m'].predict(np.array([x]))
 
 
+class GroupingModel(modelInterface):
+
+    def __init__(self, sampleX: list, sampleY: list):
+        self.models = []
+        self.__createGroupModel(sampleX, sampleY)
+
+    def __createGroupModel(self, sampleX: list, sampleY: list):
+        group = self.__grouping(len(sampleX[0]))
+        size = len(sampleX)
+        GsampleX = [[[sampleX[i][p]
+                    for p in g]
+                    for i in range(size)]
+                    for g in group]
+        self.models = [FuzzyCM(np.array(GsampleX[g]), sampleY) for g in range(len(group))]
+
+    def __grouping(self, size):
+        lst = random.sample([x for x in range(size)], size)
+        if size < 5:
+            return [np.array(lst)]
+        size = (len(lst)+4)/5
+        lst = np.array_split(lst, size)
+        return lst
+
+    def getPredictValue(self, x: list, a=2.5, b=50, c=97.5):
+        sum = np.array([0.0 for i in range(len(x))])
+        for model in self.models:
+            sum += np.array(model.getPredictValue(x))
+        return list(sum/len(self.models))
+
+    def getPredict(self, x: float):
+        sum = np.array([0.0 for i in range(len(x))])
+        for model in self.models:
+            sum += np.array(model.getPredict(x))
+        return list(sum/len(self.models))
+
+
 if __name__ == "__main__":
     # debug parameter
     DIM = 10
-    SIZE = 1000
+    SIZE = 30
 
     # test function
     def f(x: float):
@@ -102,23 +138,28 @@ if __name__ == "__main__":
     s1 = time.time()
     # MODEL = GPR(X, Y)
     s2 = time.time()
-    MODEL_FUZZY = FuzzyCM(X, Y)
+    # MODEL_FUZZY = FuzzyCM(X, Y)
     s3 = time.time()
+    MODEL_GROUP = GroupingModel(X, Y)
+    s4 = time.time()
     print("GPR:\t{0}ms".format(1000*(s2-s1)),
-          "FuzzyCM:\t{0}ms".format(1000*(s3-s2)), sep="\n")
+          "FuzzyCM:\t{0}ms".format(1000*(s3-s2)),
+          "Group:\t{0}ms".format(1000*(s4-s3)), sep="\n")
 
     if DIM == 1:
         # create sample point for debug
         ALL_X = np.linspace(0.0, 1.0, 500)[:, None]
         ALL_Y_TRUE = [f(x) for x in ALL_X]
         # ALL_Y_GPR = MODEL.getPredictValue(ALL_X)
-        ALL_Y_FUZZY = MODEL_FUZZY.getPredictValue(ALL_X)
+        # ALL_Y_FUZZY = MODEL_FUZZY.getPredictValue(ALL_X)
+        ALL_Y_GROUP = MODEL_GROUP.getPredictValue(ALL_X)
 
         print("-- create figure-- ")
         # create model figure
         plt.plot(ALL_X, ALL_Y_TRUE, c="r", label='function')
         # plt.plot(ALL_X, ALL_Y_GPR, c="b", label='GPR')
-        plt.plot(ALL_X, ALL_Y_FUZZY, c="y", label='Fuzzy CM')
+        # plt.plot(ALL_X, ALL_Y_FUZZY, c="y", label='Fuzzy CM')
+        plt.plot(ALL_X, ALL_Y_GROUP, c="g", label='Grouping Model')
         plt.plot(X, Y, 'o', marker=".", markersize=10, c="black", label="sample point")
         plt.legend()
 
