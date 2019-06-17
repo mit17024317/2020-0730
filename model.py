@@ -94,6 +94,8 @@ class GroupingModel(modelInterface):
 
     def __grouping(self, size):
         lst = random.sample([x for x in range(size)], size)
+        size = len(lst)/5
+        lst = np.array_split(lst, size)
         return lst
 
 
