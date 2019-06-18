@@ -36,9 +36,9 @@ if __name__ == "__main__":
 
     # test function
     def f(x: float):
-        sum = np.sum(x)
-        sum = np.sin(np.sqrt(sum)*10.0)
-        return sum
+        x = (x*1000.0)-500.0
+        v = [t*np.sin(np.sqrt(abs(t))) for t in x]
+        return sum(v)
 
     sampleX = [i for i in range(1, 50)]
     sampleY = []
