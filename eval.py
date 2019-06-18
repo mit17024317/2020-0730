@@ -10,7 +10,7 @@ import random
 
 
 def RMSE(dim, func, model):
-    size = 1000
+    size = 10000
     if dim > RMSE.max:
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
@@ -25,48 +25,39 @@ def RMSE(dim, func, model):
     v = pow(v, 2)
     return np.sqrt(np.sum(v)/size)
 
-RMSE.max = 50
+
+RMSE.max = 101
 RMSE.dataset = [[] for i in range(RMSE.max+1)]
 
 
 if __name__ == "__main__":
     # debug parameter
-    DIM = 1 
-    SIZE = 300
+    SIZE = 50
 
     # test function
     def f(x: float):
         sum = np.sum(x)
-        return np.sin(np.sqrt(sum)*10.0)
+        sum = np.sin(np.sqrt(sum)*10.0)
+        return sum
 
-    print("-- create model-- ")
-    # create sample point
-    X = np.array([[s[i] for i in range(DIM)] for s in lhs(DIM, SIZE)])
-    Y = np.array([f(i) for i in X]) 
-    model1 = FuzzyCM(X, Y)
-    # model2 = GPR(X, Y)
+    sampleX = [i for i in range(1, 50)]
+    sampleY = []
+    for DIM in sampleX:
+
+        # create sample point
+        X = np.array([[s[i] for i in range(DIM)] for s in lhs(DIM, SIZE)])
+        Y = np.array([f(i) for i in X]) 
+        model = FuzzyCM(X, Y)
+        
+        # calc RMSE
+        val = RMSE(DIM, f, model)
+        sampleY.append(val)
+        print("dim= ", DIM, ": ", val)
     
-    val = RMSE(DIM, f, model1)
-    print(val)
-    # val = RMSE(DIM, f, model2)
-    print(val)
+    plt.plot(sampleX, sampleY, marker=".", markersize=10, c="black")
+    plt.legend()
 
-    if DIM == 1:
-        # create sample point for debug
-        ALL_X = np.linspace(0.0, 1.0, 500)[:, None]
-        ALL_Y_TRUE = [f(x) for x in ALL_X]
-        ALL_Y_FUZZY = model1.getPredictValue(ALL_X)
+    plt.xlabel("dimension")
+    plt.ylabel("RMSE")
 
-        print("-- create figure-- ")
-        # create model figure
-        plt.plot(ALL_X, ALL_Y_TRUE, c="r", label='function')
-        # plt.plot(ALL_X, ALL_Y_GPR, c="b", label='GPR')
-        plt.plot(ALL_X, ALL_Y_FUZZY, c="y", label='Fuzzy CM')
-        plt.plot(X, Y, 'o', marker=".", markersize=10, c="black", label="sample point")
-        plt.legend()
-
-        plt.xlabel("X")
-        plt.ylabel("Y")
-
-        plt.savefig("./fig.png")
-    print("--- finish ---")
+    plt.savefig("./fig.png")
