@@ -6,6 +6,7 @@ from pyDOE import lhs
 from model import FuzzyCM
 from scipy import integrate
 from scipy.stats import norm
+from eval import RMSE
 
 
 class EGO:
@@ -59,6 +60,8 @@ class EGO:
             self.X = np.array(np.append(self.X, [newInd], axis=0))
             self.Y = np.append(self.Y, self.f(newInd))
             self.model = FuzzyCM(self.X, self.Y)
+            self.min.append(np.amin(self.Y))
+            self.RMSE.append(RMSE(self.dim, self.f, self.model))
             self.__print()
 
 
@@ -68,7 +71,8 @@ class EGO:
         self.dim = dim
         self.__sampling()
         self.model = model(self.X, self.Y)
-        self.min = np.amin(self.Y)
+        self.min = [np.amin(self.Y)]
+        self.RMSE = [RMSE(dim, f, self.model)]
         self.__print()
 
 

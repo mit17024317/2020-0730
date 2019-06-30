@@ -13,13 +13,17 @@ if __name__ == "__main__":
         sum = np.sum(x)
         return np.sin(np.sqrt(sum)*10.0)
 
-    print("--- GroupingModel optimize ---")
-    ego = EGO(f, 2, GroupingModel)
-    ego.optimize(15)
-    print("--- finish ---")
+    # print("--- GroupingModel optimize ---")
+    # ego = EGO(f, 2, GroupingModel)
+    # ego.optimize(30)
+    # print("min:", np.array(ego.min).T)
+    # print("RMSE:", np.array(ego.RMSE).T)
+    # print("--- finish ---")
 
     print("--- FuzzyCM optimize ---")
     ego = EGO(f, 1, FuzzyCM)
-    ego.optimize(15)
+    ego.optimize(30)
+    print("min:", np.array(ego.min).T)
+    print("RMSE:", np.array(ego.RMSE).T)
     print("--- finish ---")
 
