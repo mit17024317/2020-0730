@@ -112,10 +112,13 @@ class GroupingModel(modelInterface):
         return list(sum/len(self.models))
 
     def getPredict(self, x: float):
-        sum = np.array([0.0 for i in range(len(x))])
+        mean, var = 0.0, 0.0
         for model in self.models:
-            sum += np.array(model.getPredict(x))
-        return list(sum/len(self.models))
+            pre = model.getPredict(x)
+            mean += pre[0][0][0]
+            var += pre[1][0][0]
+        l = len(self.models)
+        return (np.array([[mean]])/l, np.array([[var]])/l)
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ class EGO:
         if len(self.X[0]) == 1:
             # create sample point for debug
             ALL_X = np.linspace(0.0, 1.0, 500)[:, None]
-            ALL_Y_TRUE = [f(x) for x in ALL_X]
+            ALL_Y_TRUE = [self.f(x) for x in ALL_X]
             ALL_Y = self.model.getPredictValue(ALL_X)
 
             print("-- create figure-- ")
@@ -56,18 +56,18 @@ class EGO:
                 if val > max:
                     newInd = x
                     max = val
-            self.X = np.array([np.append(self.X, [newInd])]).T
-            self.Y = np.append(self.Y, f(newInd))
+            self.X = np.array(np.append(self.X, [newInd], axis=0))
+            self.Y = np.append(self.Y, self.f(newInd))
             self.model = FuzzyCM(self.X, self.Y)
             self.__print()
 
 
-    def __init__(self, f):
+    def __init__(self, f, dim, model=FuzzyCM):
         self.eval = 0
         self.f = f
-        self.dim = 1
+        self.dim = dim
         self.__sampling()
-        self.model = FuzzyCM(self.X, self.Y)
+        self.model = model(self.X, self.Y)
         self.min = np.amin(self.Y)
         self.__print()
 
@@ -80,7 +80,8 @@ if __name__ == "__main__":
         return np.sin(np.sqrt(sum)*10.0)
 
     print("--- start ---")
-    ego = EGO(f)
+    # ego = EGO(f, 1, FuzzyCM)
+    ego = EGO(f, 2)
     print("-- optimize --")
-    ego.optimize(30)
+    ego.optimize(15)
     print("--- finish ---")
