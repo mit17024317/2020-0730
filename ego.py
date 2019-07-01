@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import random
 from pyDOE import lhs
 from model import FuzzyCM
+from modelSelect import SelectModel
 from scipy import integrate
 from scipy.stats import norm
 from eval import RMSE
@@ -59,18 +60,20 @@ class EGO:
                     max = val
             self.X = np.array(np.append(self.X, [newInd], axis=0))
             self.Y = np.append(self.Y, self.f(newInd))
-            self.model = FuzzyCM(self.X, self.Y)
+            self.model = self.modelSelecter.getModel()(self.X, self.Y)
+            print(self.model)
             self.min.append(np.amin(self.Y))
             self.RMSE.append(RMSE(self.dim, self.f, self.model))
             self.__print()
 
 
-    def __init__(self, f, dim, model=FuzzyCM):
+    def __init__(self, f, dim, selecter=SelectModel([FuzzyCM])):
         self.eval = 0
         self.f = f
         self.dim = dim
         self.__sampling()
-        self.model = model(self.X, self.Y)
+        self.modelSelecter = selecter
+        self.model = self.modelSelecter.getModel()(self.X, self.Y)
         self.min = [np.amin(self.Y)]
         self.RMSE = [RMSE(dim, f, self.model)]
         self.__print()
@@ -84,7 +87,6 @@ if __name__ == "__main__":
         return np.sin(np.sqrt(sum)*10.0)
 
     print("--- start ---")
-    # ego = EGO(f, 1, FuzzyCM)
     ego = EGO(f, 2)
     print("-- optimize --")
     ego.optimize(15)
