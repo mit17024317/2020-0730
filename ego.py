@@ -16,7 +16,7 @@ class EGO:
             # create sample point for debug
             ALL_X = np.linspace(0.0, 1.0, 500)[:, None]
             ALL_Y_TRUE = [self.f(x) for x in ALL_X]
-            ALL_Y = self.model.getPredictValue(ALL_X)
+            ALL_Y = self.modelSelecter.getModel().getPredictValue(ALL_X)
 
             print("-- create figure-- ")
             # create model figure
@@ -31,14 +31,14 @@ class EGO:
             plt.savefig("./ego/fig{0}.png".format(self.eval))
 
     def __sampling(self):
-        self.SIZE = 10
+        self.SIZE = 30
         # create sample point
         self.X = np.array([[s[i] for i in range(self.dim)] for s in lhs(self.dim, self.SIZE)])
         self.Y = np.array([self.f(i) for i in self.X])
 
     def __EI(self, x):
 
-        m, v = self.model.getPredict(x)
+        m, v = self.modelSelecter.getModel().getPredict(x)
         m = m[0]
         s = np.sqrt(v[0])
 
@@ -58,12 +58,12 @@ class EGO:
                 if val > max:
                     newInd = x
                     max = val
+            y = self.f(newInd)
             self.X = np.array(np.append(self.X, [newInd], axis=0))
             self.Y = np.append(self.Y, self.f(newInd))
-            self.model = self.modelSelecter.getModel()(self.X, self.Y)
-            print(self.model)
+            self.modelSelecter.update(newInd, y, self.X, self.Y)
             self.min.append(np.amin(self.Y))
-            self.RMSE.append(RMSE(self.dim, self.f, self.model))
+            self.RMSE.append(RMSE(self.dim, self.f, self.modelSelecter.getMode()))
             self.__print()
 
 
@@ -72,10 +72,9 @@ class EGO:
         self.f = f
         self.dim = dim
         self.__sampling()
-        self.modelSelecter = selecter
-        self.model = self.modelSelecter.getModel()(self.X, self.Y)
+        self.modelSelecter = selecter(self.X, self.Y)
         self.min = [np.amin(self.Y)]
-        self.RMSE = [RMSE(dim, f, self.model)]
+        self.RMSE = [RMSE(dim, f, self.modelSelecter.getModel())]
         self.__print()
 
 
@@ -89,5 +88,5 @@ if __name__ == "__main__":
     print("--- start ---")
     ego = EGO(f, 2)
     print("-- optimize --")
-    ego.optimize(15)
+    ego.optimize(35)
     print("--- finish ---")
