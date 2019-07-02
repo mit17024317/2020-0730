@@ -20,10 +20,10 @@ if __name__ == "__main__":
     # print("RMSE:", np.array(ego.RMSE).T)
     # print("--- finish ---")
 
-    print("--- FuzzyCM optimize ---")
-    ego = EGO(f, 1, FuzzyCM)
-    ego.optimize(30)
-    print("min:", np.array(ego.min).T)
-    print("RMSE:", np.array(ego.RMSE).T)
-    print("--- finish ---")
+    # print("--- FuzzyCM optimize ---")
+    # ego = EGO(f, 1)
+    # ego.optimize(40)
+    # print("min:", np.array(ego.min).T)
+    # print("RMSE:", np.array(ego.RMSE).T)
+    # print("--- finish ---")
 
