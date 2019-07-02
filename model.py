@@ -89,13 +89,13 @@ class GroupingModel(modelInterface):
         self.__createGroupModel(sampleX, sampleY)
 
     def __createGroupModel(self, sampleX: list, sampleY: list):
-        group = self.__grouping(len(sampleX[0]))
+        self.group = self.__grouping(len(sampleX[0]))
         size = len(sampleX)
         GsampleX = [[[sampleX[i][p]
                     for p in g]
                     for i in range(size)]
-                    for g in group]
-        self.models = [FuzzyCM(np.array(GsampleX[g]), sampleY) for g in range(len(group))]
+                    for g in self.group]
+        self.models = [FuzzyCM(np.array(GsampleX[g]), sampleY) for g in range(len(self.group))]
 
     def __grouping(self, size):
         lst = random.sample([x for x in range(size)], size)
@@ -106,16 +106,33 @@ class GroupingModel(modelInterface):
         return lst
 
     def getPredictValue(self, x: list, a=2.5, b=50, c=97.5):
+        X = [[] for g in self.group]
+        for t in x:
+            tmp = [[] for g in self.group]
+            for i, g in enumerate(self.group):
+                for gn in g:
+                    tmp[i].append(t[gn])
+            for i, _ in enumerate(self.group):
+                X[i].append(tmp[i])
+
         sum = np.array([0.0 for i in range(len(x))])
-        for model in self.models:
-            sum += np.array(model.getPredictValue(x))
+        for model, xg in zip(self.models, X):
+            sum += np.array(model.getPredictValue(np.array(xg)))
         return list(sum/len(self.models))
 
     def getPredict(self, x: float):
-        sum = np.array([0.0 for i in range(len(x))])
-        for model in self.models:
-            sum += np.array(model.getPredict(x))
-        return list(sum/len(self.models))
+        X = [[] for g in self.group]
+        for i, g in enumerate(self.group):
+            for gn in g:
+                X[i].append(x[gn])
+
+        mean, var = 0.0, 0.0
+        for model, xg in zip(self.models, X):
+            pre = model.getPredict(xg)
+            mean += pre[0][0][0]
+            var += pre[1][0][0]
+        l = len(self.models)
+        return (np.array([[mean]])/l, np.array([[var]])/l)
 
 
 if __name__ == "__main__":

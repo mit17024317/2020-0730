@@ -15,13 +15,13 @@ def RMSE(dim, func, model):
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
         sys.exit()
-    if RMSE.dataset[DIM] == []:
-        RMSE.dataset[DIM] = \
-            np.array([[random.random() for k in range(DIM)]
+    if RMSE.dataset[dim] == []:
+        RMSE.dataset[dim] = \
+            np.array([[random.random() for k in range(dim)]
                       for i in range(size)])
 
-    v = np.array([f(i) for i in RMSE.dataset[DIM]]) - \
-        model.getPredictValue(RMSE.dataset[DIM])
+    v = np.array([func(i) for i in RMSE.dataset[dim]]) - \
+        model.getPredictValue(RMSE.dataset[dim])
     v = pow(v, 2)
     return np.sqrt(np.sum(v)/size)
 
