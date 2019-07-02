@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import axes3d
 
 def plot2D(f):
     # create sample point for debug
@@ -15,25 +16,39 @@ def plot2D(f):
     plt.xlabel("X")
     plt.ylabel("Y")
 
-    plt.savefig("./fig.png")
+    plt.savefig("./graph/2D.png")
+    plt.clf()
     
 
-# TODO
 def plot3D(f):
+    PNUM = 100
     # create sample point for debug
-    X = np.linspace(0.0, 1.0, 500)[:, None]
-    Y = [f(x) for x in X]
+    x1 = np.linspace(0.0, 1.0, PNUM)
+    x2 = np.linspace(0.0, 1.0, PNUM)
+
+    X1, X2 = np.meshgrid(x1, x2)
+
+    Y = []
+    for h in x1:
+        tmp = []
+        for w in x2:
+            tmp.append(f([h, w]))
+        Y.append(tmp)
+    Y = np.array(Y)
 
     print("-- create figure-- ")
-
     # create model figure
-    plt.plot(X, Y, c="r", label='function')
-    plt.legend()
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection="3d")
 
-    plt.xlabel("X")
-    plt.ylabel("Y")
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
 
-    plt.savefig("./fig.png")
+    ax.plot_wireframe(X1, X2, Y, color="darkblue")
+
+    plt.savefig("./graph/3D.png")
+    plt.clf()
     
 
 def plot(f, d):
