@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import random
 from pyDOE import lhs
 from model import FuzzyCM
-from model import GroupingModel 
+from model import GroupingModel
 from modelSelect import SelectModel
 from scipy import integrate
 from scipy.stats import norm
@@ -24,7 +24,8 @@ class EGO:
             plt.figure()
             plt.plot(ALL_X, ALL_Y_TRUE, c="r", label='function')
             plt.plot(ALL_X, ALL_Y, c="y", label='Fuzzy CM')
-            plt.plot(self.X, self.Y, 'o', marker=".", markersize=10, c="black", label="sample point")
+            plt.plot(self.X, self.Y, 'o', marker=".",
+                     markersize=10, c="black", label="sample point")
             plt.legend()
 
             plt.xlabel("X")
@@ -32,9 +33,10 @@ class EGO:
             plt.savefig("./ego/fig{0}.png".format(self.eval))
 
     def __sampling(self):
-        self.SIZE = 30
+        self.SIZE = 50
         # create sample point
-        self.X = np.array([[s[i] for i in range(self.dim)] for s in lhs(self.dim, self.SIZE)])
+        self.X = np.array([[s[i] for i in range(self.dim)]
+                           for s in lhs(self.dim, self.SIZE)])
         self.Y = np.array([self.f(i) for i in self.X])
 
     def __EI(self, x):
@@ -42,9 +44,8 @@ class EGO:
         m, v = self.modelSelecter.getModel().getPredict(x)
         m = m[0]
         s = np.sqrt(v[0])
-
-        return norm.cdf(self.min, m, s)[0]
-
+        nm = (self.min - m) / s
+        return nm * s * norm.cdf(nm, 0, 1)[0] + s * norm.pdf(nm, 0, 1)[0]
 
     def optimize(self, evalationNum):
         for _ in range(evalationNum - self.SIZE):
@@ -53,7 +54,7 @@ class EGO:
             max = -1.0
             newInd = []
             self.eval += 1
-            for _ in range(100):
+            for _ in range(1000):
                 x = [random.random() for _ in range(self.dim)]
                 val = self.__EI(x)
                 if val > max:
@@ -64,10 +65,10 @@ class EGO:
             self.Y = np.append(self.Y, self.f(newInd))
             self.modelSelecter.update(newInd, y, self.X, self.Y)
             print(self.modelSelecter.getModel())
-            self.min.append(np.amin(self.Y))
-            self.RMSE.append(RMSE(self.dim, self.f, self.modelSelecter.getModel()))
+            self.min = np.amin(self.Y)
+            self.RMSE.append(
+                RMSE(self.dim, self.f, self.modelSelecter.getModel()))
             self.__print()
-
 
     def __init__(self, f, dim, models=[FuzzyCM]):
         self.eval = 0
@@ -84,11 +85,10 @@ if __name__ == "__main__":
 
     # test function
     def f(x: float):
-        sum = np.sum(x)
-        return np.sin(np.sqrt(sum)*10.0)
+        return np.sin(x[0]*100)
 
     print("--- start ---")
-    ego = EGO(f, 20, [FuzzyCM, GroupingModel])
+    ego = EGO(f, 1, [FuzzyCM, GroupingModel])
     print("-- optimize --")
-    ego.optimize(50)
+    ego.optimize(60)
     print("--- finish ---")
