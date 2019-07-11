@@ -9,7 +9,19 @@ import function as fc
 from eval import RMSE
 
 if __name__ == "__main__":
-    fl = [fc.Schwefel, fc.Rosenbrock, fc.Rastrigin]
+    # test function
+    def f1(x: float):
+        sum = np.sum(x)
+        return np.sin(np.sqrt(sum)*10.0)
+    # test function
+    def f2(x: float):
+        sum = np.sum(x)
+        return np.sin(np.sqrt(sum)*10.0)/1000
+    # test function
+    def f3(x: float):
+        return fc.Schwefel(x)/1000
+
+    fl = [fc.Schwefel, f3, f1, f2]
     ml = [FuzzyCM, GroupingModel]
     cll = [["normal", "black"], ["Group", "red"]]
     SIZE = 500
@@ -21,16 +33,18 @@ if __name__ == "__main__":
             for DIM in sampleX:
 
                 # create sample point
-                X = np.array([[s[i] for i in range(DIM)] for s in lhs(DIM, SIZE)])
-                Y = np.array([f(i) for i in X]) 
+                X = np.array([[s[i] for i in range(DIM)]
+                              for s in lhs(DIM, SIZE)])
+                Y = np.array([f(i) for i in X])
                 model = m(X, Y)
-                
+
                 # calc RMSE
                 val = RMSE(DIM, f, model)
                 sampleY.append(val)
                 print("dim= ", DIM, ": ", val)
-            
-            plt.plot(sampleX, sampleY, marker=".", markersize=10, label=cl[0], c=cl[1])
+
+            plt.plot(sampleX, sampleY, marker=".",
+                     markersize=10, label=cl[0], c=cl[1])
             plt.legend()
 
             plt.xlabel("dimension")
