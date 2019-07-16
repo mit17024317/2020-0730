@@ -7,6 +7,8 @@ from model import FuzzyCM
 from model import GroupingModel
 
 from function import Schwefel
+from function import Rosenbrock
+from function import Rastrigin
 
 
 def out(ego, txt):
@@ -23,26 +25,24 @@ def out(ego, txt):
 if __name__ == "__main__":
     print("-- optimize start --")
     END = 100
-    os.remove("./ex/min/mix.txt")
-    os.remove("./ex/rmse/mix.txt")
 
+    func = Rastrigin
 
-    for i in range(10):
+    for i in range(2):
         print("--- new EGO optimize ---")
-        ego = EGO(Schwefel, 20, [FuzzyCM, GroupingModel])
+        ego = EGO(func, 20, [FuzzyCM, GroupingModel])
         ego.optimize(END)
         out(ego, "mix")
         print("--- finish ---")
 
         print("--- GroupingModel optimize ---")
-        ego = EGO(Schwefel, 20, [GroupingModel])
+        ego = EGO(func, 20, [GroupingModel])
         ego.optimize(END)
         out(ego, "Group")
         print("--- finish ---")
 
         print("--- FuzzyCM optimize ---")
-        ego = EGO(Schwefel, 20, [FuzzyCM])
+        ego = EGO(func, 20, [FuzzyCM])
         ego.optimize(END)
         out(ego, "Norm")
         print("--- finish ---")
-
