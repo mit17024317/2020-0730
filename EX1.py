@@ -12,16 +12,16 @@ if __name__ == "__main__":
     # test function
     def f1(x: float):
         sum = np.sum(x)
-        return np.sin(np.sqrt(sum)*10.0)
+        return np.sin(np.sqrt(sum)*1000.0)
     # test function
     def f2(x: float):
         sum = np.sum(x)
-        return np.sin(np.sqrt(sum)*10.0)/1000
+        return np.sin(np.sqrt(sum)*1000.0)/1000
     # test function
     def f3(x: float):
-        return fc.Schwefel(x)/1000
+        return fc.Rastrigin(x)/1000
 
-    fl = [fc.Schwefel, f3, f1, f2]
+    fl = [fc.Rastrigin, f3, f1, f2]
     ml = [FuzzyCM, GroupingModel]
     cll = [["normal", "black"], ["Group", "red"]]
     SIZE = 500

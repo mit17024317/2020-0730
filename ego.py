@@ -44,7 +44,7 @@ class EGO:
         m, v = self.modelSelecter.getModel().getPredict(x)
         m = m[0]
         s = np.sqrt(v[0])
-        nm = (self.min - m) / s
+        nm = (self.min[-1] - m) / s
         return nm * s * norm.cdf(nm, 0, 1)[0] + s * norm.pdf(nm, 0, 1)[0]
 
     def optimize(self, evalationNum):
@@ -65,7 +65,7 @@ class EGO:
             self.Y = np.append(self.Y, self.f(newInd))
             self.modelSelecter.update(newInd, y, self.X, self.Y)
             print(self.modelSelecter.getModel())
-            self.min = np.amin(self.Y)
+            self.min.append(np.amin(self.Y))
             self.RMSE.append(
                 RMSE(self.dim, self.f, self.modelSelecter.getModel()))
             self.__print()
