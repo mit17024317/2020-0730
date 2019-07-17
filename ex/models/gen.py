@@ -4,14 +4,25 @@ import csv
 
 
 def add(lst1, lst2):
-    lst = []
     for i in range(len(lst1)):
-        lst.append(lst1[i]+lst2[i])
-    return lst
+        lst1[i].append(lst2[i][0])
+    return lst1
 
 
-def toF(lst):
-    return [float(t) for t in lst]
+def toS(lst):
+    return [[t.strip()] for t in lst]
+
+
+def modelNum(lst):
+    l = len(lst[0])
+    ans = []
+    for m in lst:
+        v = 0
+        for x in m:
+            v += 1 if x == "FuzzyCM" else 0
+        v /= l
+        ans.append(v)
+    return ans
 
 
 if __name__ == "__main__":
@@ -20,15 +31,13 @@ if __name__ == "__main__":
         with open("{}.txt".format(name), "r") as f:
             reader = csv.reader(f)
             y = []
-            cnt = 0
             for row in reader:
-                cnt += 1
-                y = toF(row[:-1]) if y == [] else add(y, toF(row[:-1]))
+                y = toS(row[:-1]) if y == [] else add(y, toS(row[:-1]))
             x = [x+50 for x in range(len(y))]
             # y軸小数点以下3桁表示
-            plt.plot(x, [t / cnt for t in y], label=name)
+            plt.plot(x, modelNum(y), label=name)
     plt.legend()
     plt.xlabel("number of evaluation")
-    plt.ylabel("rmse")
-    plt.savefig("rmse.png")
+    plt.ylabel("model")
+    plt.savefig("model.png")
     plt.show()

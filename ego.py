@@ -64,7 +64,8 @@ class EGO:
             self.X = np.array(np.append(self.X, [newInd], axis=0))
             self.Y = np.append(self.Y, self.f(newInd))
             self.modelSelecter.update(newInd, y, self.X, self.Y)
-            print(self.modelSelecter.getModel())
+            self.useModels.append(
+                self.modelSelecter.getModel().__class__.__name__)
             self.min.append(np.amin(self.Y))
             self.RMSE.append(
                 RMSE(self.dim, self.f, self.modelSelecter.getModel()))
@@ -78,6 +79,7 @@ class EGO:
         self.modelSelecter = SelectModel(models, self.X, self.Y)
         self.min = [np.amin(self.Y)]
         self.RMSE = [RMSE(dim, f, self.modelSelecter.getModel())]
+        self.useModels = [self.modelSelecter.getModel().__class__.__name__]
         self.__print()
 
 
