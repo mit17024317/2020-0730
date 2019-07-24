@@ -20,9 +20,9 @@ class GPR(modelInterface):
 
     def __init__(self, sampleX: list, sampleY: list):
         DIM = sampleX[0].size
-        kernel = GPy.kern.RBF(DIM)+GPy.kern.Matern32(DIM)
+        kernel = GPy.kern.sde_RBF(DIM) + GPy.kern.Matern32(DIM)
         self.model = GPy.models.GPRegression(sampleX, sampleY[:, None], kernel=kernel)
-        self.model.optimize()
+        self.model.optimize(optimizer="sgd", max_itres=100000)
 
     def getPredictValue(self, x: list, a=2.5, b=50, c=97.5):
         return [val[0] for val in
