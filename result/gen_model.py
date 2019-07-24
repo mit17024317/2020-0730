@@ -25,10 +25,10 @@ def modelNum(lst):
     return ans
 
 
-if __name__ == "__main__":
-    files = ["Norm", "Group", "mix"]
+def generate(prob):
+    files = ["norm", "group", "mix"]
     for name in files:
-        with open("{}.txt".format(name), "r") as f:
+        with open("{}/models_{}.csv".format(prob, name), "r") as f:
             reader = csv.reader(f)
             y = []
             for row in reader:
@@ -39,5 +39,9 @@ if __name__ == "__main__":
     plt.legend()
     plt.xlabel("number of evaluation")
     plt.ylabel("model")
-    plt.savefig("model.png")
+    plt.savefig("fig/{}_model.png".format(prob))
     plt.show()
+
+
+if __name__ == "__main__":
+    generate("Schwefel_100/")

@@ -14,10 +14,10 @@ def toF(lst):
     return [float(t) for t in lst]
 
 
-if __name__ == "__main__":
-    files = ["Norm", "Group", "mix"]
+def generate(prob):
+    files = ["norm", "group", "mix"]
     for name in files:
-        with open("{}.txt".format(name), "r") as f:
+        with open("{}/rmse_{}.csv".format(prob, name), "r") as f:
             reader = csv.reader(f)
             y = []
             cnt = 0
@@ -29,6 +29,10 @@ if __name__ == "__main__":
             plt.plot(x, [t / cnt for t in y], label=name)
     plt.legend()
     plt.xlabel("number of evaluation")
-    plt.ylabel("min value")
-    plt.savefig("min.png")
+    plt.ylabel("rmse")
+    plt.savefig("fig/{}_rmse.png".format(prob))
     plt.show()
+
+
+if __name__ == "__main__":
+    generate("Schwefel_100/")

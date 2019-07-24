@@ -42,7 +42,7 @@ def out(ego, func, dim, txt):
 
 if __name__ == "__main__":
     print("-- optimize start --")
-    END = 150 
+    END = 150
     DIM = 100
 
     func = Schwefel
