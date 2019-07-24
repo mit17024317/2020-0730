@@ -11,16 +11,30 @@ from function import Rosenbrock
 from function import Rastrigin
 
 
-def out(ego, txt):
-    with open("ex/min/{}.txt".format(txt), "a") as f:
+def createDir(func, dim):
+    dir = "./result/"
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+
+    dir += "{}_{}/".format(func, dim)
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+
+    return dir
+
+
+def out(ego, func, dim, txt):
+    dir = createDir(func, dim)
+
+    with open(dir+"min_{}.csv".format(txt), "a") as f:
         for x in ego.min:
             f.write(str(x)+", ")
         f.write("\n")
-    with open("ex/rmse/{}.txt".format(txt), "a") as f:
+    with open(dir+"rmse_{}.csv".format(txt), "a") as f:
         for x in ego.RMSE:
             f.write(str(x)+", ")
         f.write("\n")
-    with open("ex/models/{}.txt".format(txt), "a") as f:
+    with open(dir+"models_{}.csv".format(txt), "a") as f:
         for x in ego.useModels:
             f.write(str(x)+", ")
         f.write("\n")
@@ -28,25 +42,27 @@ def out(ego, txt):
 
 if __name__ == "__main__":
     print("-- optimize start --")
-    END = 150
+    END = 150 
+    DIM = 100
 
     func = Schwefel
+    func_name = "Schwefel"
 
     for i in range(30):
         print("--- new EGO optimize ---")
-        ego = EGO(func, 50, [FuzzyCM, GroupingModel])
+        ego = EGO(func, DIM, [FuzzyCM, GroupingModel])
         ego.optimize(END)
-        out(ego, "mix")
-        print("--- finish ---")
-
-        print("--- GroupingModel optimize ---")
-        ego = EGO(func, 50, [GroupingModel])
-        ego.optimize(END)
-        out(ego, "Group")
+        out(ego, func_name, DIM, "mix")
         print("--- finish ---")
 
         print("--- FuzzyCM optimize ---")
-        ego = EGO(func, 50, [FuzzyCM])
+        ego = EGO(func, DIM, [FuzzyCM])
         ego.optimize(END)
-        out(ego, "Norm")
+        out(ego, func_name, DIM, "norm")
+        print("--- finish ---")
+
+        print("--- GroupingModel optimize ---")
+        ego = EGO(func, DIM, [GroupingModel])
+        ego.optimize(END)
+        out(ego, func_name, DIM, "group")
         print("--- finish ---")

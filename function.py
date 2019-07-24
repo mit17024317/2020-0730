@@ -5,7 +5,7 @@ def Rosenbrock(x):
     sum = 0
     for i in range(len(x)-1):
         sum += 100*(10*x[i+1] - 5 - (10*x[i]-5)**2)**2 + (1-10*x[i]-5)**2
-    return sum/4000
+    return sum/5000
 
 def Rastrigin(x):
     n = len(x)
@@ -13,14 +13,14 @@ def Rastrigin(x):
     for t in x:
         t = 5.12*2*t-5.12
         sum += t**2-10*np.cos(2*np.pi*t)
-    return sum/100
+    return sum/1000
 
 def Schwefel(x):
     sum = 0
     for t in x:
         t = 1000*t-500
         sum -= t*np.sin(np.sqrt(np.abs(t)))
-    return sum/1000
+    return sum/3000
 
 if __name__ == "__main__":
     plot(Rosenbrock, 1)
