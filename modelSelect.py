@@ -5,24 +5,24 @@ from model import GroupingModel
 from pyDOE import lhs
 
 
-class WeightModel:
+class WeightAddModel:
     def __init__(self, model, X, Y):
         self.modelClass = model
         self.model = model(X, Y)
         self.weight = 0.0
 
     def update(self, indiv, valEval, X, Y):
-        val = self.model.getPredictValue(np.array([indiv]))[0]
-        self.weight += val
+        val = self.model.getPredict(np.array(indiv))
+        self.weight += abs(valEval - val)
         self.model = self.modelClass(X, Y)
 
 
 class SelectModel:
-    def __init__(self, models, X, Y):
-        self.models = [WeightModel(m, X, Y) for m in models]
+    def __init__(self, models, X, Y, weighter=WeightAddModel):
+        self.models = [weighter(m, X, Y) for m in models]
 
     def getModel(self):
-        it = self.models.index(max(self.models, key=lambda m: m.weight))
+        it = self.models.index(min(self.models, key=lambda m: m.weight))
         return self.models[it].model
 
     def update(self, indiv, valEval, X, Y):
