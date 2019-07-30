@@ -5,6 +5,23 @@ from model import GroupingModel
 from pyDOE import lhs
 
 
+class WeightRecentModel:
+    def __init__(self, model, X, Y):
+        self.modelClass = model
+        self.model = model(X, Y)
+        self.weight = 0.0
+        self.weightList = []
+
+    def update(self, indiv, valEval, X, Y):
+        val = self.model.getPredict(np.array(indiv))
+        self.weightList.append(abs(valEval - val))
+        self.weight += self.weightList[-1]
+        if len(self.weightList) > 5:
+            self.weight -= self.weightList[0]
+            self.weightList = self.weightList[1:]
+        self.model = self.modelClass(X, Y)
+
+
 class WeightAddModel:
     def __init__(self, model, X, Y):
         self.modelClass = model

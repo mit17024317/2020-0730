@@ -1,6 +1,21 @@
 import pytest
 from testModel import testModel, testFunc
-from modelSelect import WeightAddModel, SelectModel
+from modelSelect import WeightRecentModel, WeightAddModel, SelectModel
+
+
+class TestWeightRecentModel:
+    @pytest.mark.parametrize(("indivList"), [
+        ([[10]]),
+        ([1], [2], [3], [4], [5], [6], [7]),
+        ([[5, 3.1], [19, 0.1], [0.01, 1.3], [2.1, 6.3],
+          [0.0, 0.0], [1.3, 4.1], [1.1, 1.1]])
+    ])
+    def test_updete(self, indivList):
+        m = WeightRecentModel(testModel, None, None)
+        valList = [5*x if x < 5 else 5*5 for x in range(1, len(indivList)+1)]
+        for idv, val in zip(indivList, valList):
+            m.update(idv, testFunc(idv), None, None)
+            assert m.weight == val
 
 
 class TestWeightAddModel:
