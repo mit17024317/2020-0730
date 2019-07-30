@@ -23,7 +23,7 @@ class TestTestModel():
         (np.array([1.2, 0.1]), 6.45)
     ])
     def test_getPredict(self, model, x, val):
-        assert model.getPredict(x) == val
+        assert model.getPredict(x)[0] == val
 
 
 @pytest.mark.parametrize(("x", "val"), [

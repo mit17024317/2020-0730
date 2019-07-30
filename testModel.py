@@ -19,5 +19,5 @@ class testModel(modelInterface):
         exit()
 
     def getPredict(self, x):
-        return testFunc(x) + 5
+        return [testFunc(x) + 5, 1.0]
 

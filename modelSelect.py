@@ -13,7 +13,7 @@ class WeightRecentModel:
         self.weightList = []
 
     def update(self, indiv, valEval, X, Y):
-        val = self.model.getPredict(np.array(indiv))
+        val = self.model.getPredict(np.array(indiv))[0]
         self.weightList.append(abs(valEval - val))
         self.weight += self.weightList[-1]
         if len(self.weightList) > 5:
@@ -29,7 +29,7 @@ class WeightAddModel:
         self.weight = 0.0
 
     def update(self, indiv, valEval, X, Y):
-        val = self.model.getPredict(np.array(indiv))
+        val = self.model.getPredict(np.array(indiv))[0]
         self.weight += abs(valEval - val)
         self.model = self.modelClass(X, Y)
 
