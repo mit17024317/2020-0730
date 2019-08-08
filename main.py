@@ -9,6 +9,7 @@ from model import GroupingModel
 from function import Schwefel
 from function import Rosenbrock
 from function import Rastrigin
+import function
 
 
 def createDir(func, dim):
@@ -43,10 +44,10 @@ def out(ego, func, dim, txt):
 if __name__ == "__main__":
     print("-- optimize start --")
     END = 150
-    DIM = 100
+    DIM = 10
 
-    func = Schwefel
-    func_name = "Schwefel"
+    func = function.original1
+    func_name = "original1"
 
     for i in range(30):
         print("--- new EGO optimize ---")
