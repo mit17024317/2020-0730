@@ -10,7 +10,7 @@ import random
 
 
 def RMSE(dim, func, model):
-    size = 10000
+    size = 10
     if dim > RMSE.max:
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
@@ -20,12 +20,15 @@ def RMSE(dim, func, model):
             np.array([[random.random() for k in range(dim)]
                       for i in range(size)])
 
+    print(RMSE.dataset[dim])
+    for t in RMSE.dataset[dim]:
+        print(t)
+        print(model.getPredict(t))
     v = np.array([func(i) for i in RMSE.dataset[dim]]) - \
         model.getPredictValue(RMSE.dataset[dim])
+
     v = pow(v, 2)
     return np.sqrt(np.sum(v)/size)
-
-
 RMSE.max = 101
 RMSE.dataset = [[] for i in range(RMSE.max+1)]
 
@@ -40,7 +43,7 @@ if __name__ == "__main__":
         v = [t*np.sin(np.sqrt(abs(t))) for t in x]
         return sum(v)
 
-    sampleX = [i for i in range(1, 50)]
+    sampleX = [i for i in range(3, 4)]
     sampleY = []
     for DIM in sampleX:
 
