@@ -3,6 +3,7 @@ import os
 import gen_min
 import gen_model
 import gen_rmse
+import gen_rmseg
 
 if __name__ == "__main__":
     probs = [
@@ -17,4 +18,5 @@ if __name__ == "__main__":
         gen_min.generate(p)
         gen_rmse.generate(p)
         gen_model.generate(p)
+        gen_rmseg.generate(p)
 
