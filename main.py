@@ -35,6 +35,10 @@ def out(ego, func, dim, txt):
         for x in ego.RMSE:
             f.write(str(x)+", ")
         f.write("\n")
+    with open(dir+"rmseg_{}.csv".format(txt), "a") as f:
+        for x in ego.RMSE_G:
+            f.write(str(x)+", ")
+        f.write("\n")
     with open(dir+"models_{}.csv".format(txt), "a") as f:
         for x in ego.useModels:
             f.write(str(x)+", ")
@@ -43,11 +47,11 @@ def out(ego, func, dim, txt):
 
 if __name__ == "__main__":
     print("-- optimize start --")
-    END = 150
-    DIM = 10
+    END = 100
+    DIM = 50
 
-    func = function.original1
-    func_name = "original1"
+    func = function.Rastrigin
+    func_name = "Rastrigin"
 
     for i in range(30):
         print("--- new EGO optimize ---")
