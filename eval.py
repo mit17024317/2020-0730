@@ -27,6 +27,29 @@ def RMSE(dim, func, model):
     return np.sqrt(sum/size)
 
 
+def RMSE_G(dim, func, model):
+    size = 10000
+    size_T = 500
+    if dim > RMSE.max:
+        print("!! eval.py RMSE error !!")
+        print("update RMSE.max greater than ", dim)
+        sys.exit()
+    if RMSE.dataset[dim] == []:
+        RMSE.dataset[dim] = \
+            np.array([[random.random() for k in range(dim)]
+                      for i in range(size)])
+
+    sum = 0.0
+    lst = []
+    for data in RMSE.dataset[dim]:
+        lst.append([func(data), model.getPredict(data)[0]])
+    lst = sorted(lst)
+    for l in lst[:size_T]:
+        sum += (l[0]-l[1])**2
+
+    return np.sqrt(sum/size_T)
+
+
 RMSE.max = 101
 RMSE.dataset = [[] for i in range(RMSE.max+1)]
 

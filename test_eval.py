@@ -1,5 +1,5 @@
 import pytest
-from eval import RMSE
+from eval import RMSE, RMSE_G
 from testModel import testFunc, testModel
 
 
@@ -8,4 +8,12 @@ from testModel import testFunc, testModel
 ])
 def test_RMSE(dim):
     rmse = RMSE(dim, testFunc, testModel())
+    assert rmse == 5
+
+
+@pytest.mark.parametrize(("dim"), [
+    (1), (2), (10), (50), (100)
+])
+def test_RMSE_G(dim):
+    rmse = RMSE_G(dim, testFunc, testModel())
     assert rmse == 5
