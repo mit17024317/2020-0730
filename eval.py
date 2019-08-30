@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+Evalation method
+"""
 
 import sys
 from model import FuzzyCM
@@ -9,8 +12,26 @@ import numpy as np
 import random
 
 
-def RMSE(dim, func, model):
-    size = 10000
+def RMSE(dim, func, model, size=10000):
+    """
+    normal RMSE
+
+    Parameters
+    ----------
+    dim : int
+        dimension of problem
+    func : function: array:double -> double
+        True Function
+    model : ModelInterface
+        func's model
+    size : int
+        point of rmse size
+
+    Returns
+    -------
+    rmse : double
+        rmse value of model
+    """
     if dim > RMSE.max:
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
@@ -23,13 +44,33 @@ def RMSE(dim, func, model):
     sum = 0.0
     for data in RMSE.dataset[dim]:
         sum += (func(data)-model.getPredict(data)[0])**2
+    rmse = np.sqrt(sum/size)
 
-    return np.sqrt(sum/size)
+    return rmse
 
 
-def RMSE_G(dim, func, model):
-    size = 10000
-    size_T = 500
+def RMSE_G(dim, func, model, size=10000, size_T=500):
+    """
+    near good point RMSE
+
+    Parameters
+    ----------
+    dim : int
+        dimension of problem
+    func : function: array:double -> double
+        True Function
+    model : ModelInterface
+        func's model
+    size : int
+        point of rmse size
+    size_T : int
+        point of rmse size near good point
+
+    Returns
+    -------
+    rmse : double
+        rmse value of model
+    """
     if dim > RMSE.max:
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
@@ -46,8 +87,54 @@ def RMSE_G(dim, func, model):
     lst = sorted(lst)
     for l in lst[:size_T]:
         sum += (l[0]-l[1])**2
+    rmse = np.sqrt(sum/size_T)
 
-    return np.sqrt(sum/size_T)
+    return rmse
+
+
+def RMSE_P(dim, func, model, newIndiv, size=10000, size_T=500):
+    """
+    near new individual RMSE
+
+    Parameters
+    ----------
+    dim : int
+        dimension of problem
+    func : function: array:double -> double
+        True Function
+    model : ModelInterface
+        func's model
+    newIndiv : array:double
+        new individual
+    size : int
+        point of rmse size
+    size_T : int
+        point of rmse size near new individual
+
+    Returns
+    -------
+    rmse : double
+        rmse value of model
+    """
+    if dim > RMSE.max:
+        print("!! eval.py RMSE error !!")
+        print("update RMSE.max greater than ", dim)
+        sys.exit()
+    if RMSE.dataset[dim] == []:
+        RMSE.dataset[dim] = \
+            np.array([[random.random() for k in range(dim)]
+                      for i in range(size)])
+
+    sum = 0.0
+    lst = []
+    for data in RMSE.dataset[dim]:
+        lst.append([func(data), model.getPredict(data)[0]])
+    lst = sorted(lst)
+    for l in lst[:size_T]:
+        sum += (l[0]-l[1])**2
+    rmse = np.sqrt(sum/size_T)
+
+    return rmse
 
 
 RMSE.max = 101

@@ -17,3 +17,11 @@ def test_RMSE(dim):
 def test_RMSE_G(dim):
     rmse = RMSE_G(dim, testFunc, testModel())
     assert rmse == 5
+
+
+@pytest.mark.parametrize(("dim"), [
+    (1), (2), (10), (50), (100)
+])
+def test_RMSE_P(dim):
+    rmse = RMSE_G(dim, testFunc, testModel())
+    assert rmse == 5

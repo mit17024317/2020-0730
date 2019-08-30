@@ -7,7 +7,7 @@ import gen_rmseg
 
 if __name__ == "__main__":
     probs = [
-            "Schwefel_100"
+            "Rastrigin_50"
             ]
 
     if not os.path.exists("./fig"):

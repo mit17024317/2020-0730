@@ -11,11 +11,11 @@ def add(lst1, lst2):
 
 
 def toF(lst):
-    return [float(t) for t in lst]
+    return [float(t[3:-2]) for t in lst]
 
 
 def generate(prob):
-    files = ["norm", "group", "mix"]
+    files = ["norm",  "mix"]
     for name in files:
         with open("{}/rmse_{}.csv".format(prob, name), "r") as f:
             reader = csv.reader(f)

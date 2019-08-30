@@ -26,7 +26,7 @@ def modelNum(lst):
 
 
 def generate(prob):
-    files = ["norm", "group", "mix"]
+    files = ["norm", "mix"]
     for name in files:
         with open("{}/models_{}.csv".format(prob, name), "r") as f:
             reader = csv.reader(f)
