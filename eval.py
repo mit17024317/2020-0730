@@ -75,7 +75,7 @@ def RMSE_G(dim, func, model, size=10000, size_T=500):
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
         sys.exit()
-    if RMSE.dataset[dim] == []:
+    if len(RMSE.dataset[dim]) > 0:
         RMSE.dataset[dim] = \
             np.array([[random.random() for k in range(dim)]
                       for i in range(size)])
@@ -116,11 +116,12 @@ def RMSE_P(dim, func, model, newIndiv, size=10000, size_T=500):
     rmse : double
         rmse value of model
     """
+    # set dataset 
     if dim > RMSE.max:
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
         sys.exit()
-    if RMSE.dataset[dim] == []:
+    if len(RMSE.dataset[dim]) > 0:
         RMSE.dataset[dim] = \
             np.array([[random.random() for k in range(dim)]
                       for i in range(size)])
@@ -128,10 +129,11 @@ def RMSE_P(dim, func, model, newIndiv, size=10000, size_T=500):
     sum = 0.0
     lst = []
     for data in RMSE.dataset[dim]:
-        lst.append([func(data), model.getPredict(data)[0]])
+        norm = np.linalg.norm(data-newIndiv)
+        lst.append([norm, func(data), model.getPredict(data)[0]])
     lst = sorted(lst)
     for l in lst[:size_T]:
-        sum += (l[0]-l[1])**2
+        sum += (l[1]-l[2])**2
     rmse = np.sqrt(sum/size_T)
 
     return rmse

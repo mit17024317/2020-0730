@@ -1,5 +1,5 @@
 import pytest
-from eval import RMSE, RMSE_G
+from eval import RMSE, RMSE_G, RMSE_P
 from testModel import testFunc, testModel
 
 
@@ -23,5 +23,6 @@ def test_RMSE_G(dim):
     (1), (2), (10), (50), (100)
 ])
 def test_RMSE_P(dim):
-    rmse = RMSE_G(dim, testFunc, testModel())
+    newIndiv = [0.0 for x in range(dim)]
+    rmse = RMSE_P(dim, testFunc, testModel(), newIndiv)
     assert rmse == 5
