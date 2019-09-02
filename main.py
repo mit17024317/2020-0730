@@ -39,6 +39,10 @@ def out(ego, func, dim, txt):
         for x in ego.RMSE_G:
             f.write(str(x)+", ")
         f.write("\n")
+    with open(dir+"rmsep_{}.csv".format(txt), "a") as f:
+        for x in ego.RMSE_P:
+            f.write(str(x)+", ")
+        f.write("\n")
     with open(dir+"models_{}.csv".format(txt), "a") as f:
         for x in ego.useModels:
             f.write(str(x)+", ")
@@ -53,13 +57,7 @@ if __name__ == "__main__":
     func = function.Rastrigin
     func_name = "Rastrigin"
 
-    for i in range(30):
-        print("--- new EGO optimize ---")
-        ego = EGO(func, DIM, [FuzzyCM, GroupingModel])
-        ego.optimize(END)
-        out(ego, func_name, DIM, "mix")
-        print("--- finish ---")
-
+    for i in range(10):
         print("--- FuzzyCM optimize ---")
         ego = EGO(func, DIM, [FuzzyCM])
         ego.optimize(END)
@@ -71,3 +69,10 @@ if __name__ == "__main__":
         ego.optimize(END)
         out(ego, func_name, DIM, "group")
         print("--- finish ---")
+
+        print("--- new EGO optimize ---")
+        ego = EGO(func, DIM, [FuzzyCM, GroupingModel])
+        ego.optimize(END)
+        out(ego, func_name, DIM, "mix")
+        print("--- finish ---")
+
