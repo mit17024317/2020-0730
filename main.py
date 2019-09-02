@@ -43,6 +43,9 @@ def out(ego, func, dim, txt):
         for x in ego.RMSE_P:
             f.write(str(x)+", ")
         f.write("\n")
+    with open(dir+"distance_{}.csv".format(txt), "a") as f:
+        for a, m in ego.distance:
+            f.write(str(a)+", "+str(m)+"\n")
     with open(dir+"models_{}.csv".format(txt), "a") as f:
         for x in ego.useModels:
             f.write(str(x)+", ")

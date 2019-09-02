@@ -8,7 +8,7 @@ from model import GroupingModel
 from modelSelect import SelectModel
 from scipy import integrate
 from scipy.stats import norm
-from eval import RMSE, RMSE_G, RMSE_P
+from eval import RMSE, RMSE_G, RMSE_P, distanceValue
 
 
 class EGO:
@@ -73,6 +73,8 @@ class EGO:
                 RMSE_G(self.dim, self.f, self.modelSelecter.getModel()))
             self.RMSE_P.append(
                 RMSE_P(self.dim, self.f, self.modelSelecter.getModel(), newInd))
+            self.distance.append(
+                distanceValue(self.X, newInd))
             self.__print()
 
     def __init__(self, f, dim, models=[FuzzyCM]):
@@ -85,6 +87,7 @@ class EGO:
         self.RMSE = [RMSE(dim, f, self.modelSelecter.getModel())]
         self.RMSE_G = [RMSE_G(dim, f, self.modelSelecter.getModel())]
         self.RMSE_P = [RMSE(dim, f, self.modelSelecter.getModel())]
+        self.distance = [0.0, 0.0]
         self.useModels = [self.modelSelecter.getModel().__class__.__name__]
         self.__print()
 
