@@ -87,7 +87,7 @@ class EGO:
         self.RMSE = [RMSE(dim, f, self.modelSelecter.getModel())]
         self.RMSE_G = [RMSE_G(dim, f, self.modelSelecter.getModel())]
         self.RMSE_P = [RMSE(dim, f, self.modelSelecter.getModel())]
-        self.distance = [0.0, 0.0]
+        self.distance = [(0.0, 0.0)]
         self.useModels = [self.modelSelecter.getModel().__class__.__name__]
         self.__print()
 
