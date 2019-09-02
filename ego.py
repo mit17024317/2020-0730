@@ -72,7 +72,7 @@ class EGO:
             self.RMSE_G.append(
                 RMSE_G(self.dim, self.f, self.modelSelecter.getModel()))
             self.RMSE_P.append(
-                RMSE_P(self.dim, self.f, self.modelSelecter.getModel()))
+                RMSE_P(self.dim, self.f, self.modelSelecter.getModel(), newInd))
             self.__print()
 
     def __init__(self, f, dim, models=[FuzzyCM]):
