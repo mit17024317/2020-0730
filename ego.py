@@ -84,7 +84,7 @@ class EGO:
         self.min = [np.amin(self.Y)]
         self.RMSE = [RMSE(dim, f, self.modelSelecter.getModel())]
         self.RMSE_G = [RMSE_G(dim, f, self.modelSelecter.getModel())]
-        self.RMSE_P = [RMSE_P(dim, f, self.modelSelecter.getModel())]
+        self.RMSE_P = [RMSE(dim, f, self.modelSelecter.getModel())]
         self.useModels = [self.modelSelecter.getModel().__class__.__name__]
         self.__print()
 
