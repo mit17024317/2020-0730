@@ -10,6 +10,7 @@ from pyDOE import lhs
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import statistics
 
 
 def RMSE(dim, func, model, size=10000):
@@ -116,7 +117,7 @@ def RMSE_P(dim, func, model, newIndiv, size=10000, size_T=500):
     rmse : double
         rmse value of model
     """
-    # set dataset 
+    # set dataset
     if dim > RMSE.max:
         print("!! eval.py RMSE error !!")
         print("update RMSE.max greater than ", dim)
@@ -139,8 +140,14 @@ def RMSE_P(dim, func, model, newIndiv, size=10000, size_T=500):
     return rmse
 
 
+# RMSE dataset
 RMSE.max = 101
 RMSE.dataset = [[] for i in range(RMSE.max+1)]
+
+
+def distanceValue(indivList, newIndiv):
+    disList = [np.linalg.norm(np.array(indiv) - newIndiv) for indiv in indivList]
+    return statistics.mean(disList), statistics.median(disList)
 
 
 if __name__ == "__main__":
