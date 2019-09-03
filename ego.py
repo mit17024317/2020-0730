@@ -63,6 +63,8 @@ class EGO:
             y = self.f(newInd)
             self.X = np.array(np.append(self.X, [newInd], axis=0))
             self.Y = np.append(self.Y, self.f(newInd))
+            self.RMSE_P_bef.append(
+                RMSE_P(self.dim, self.f, self.modelSelecter.getModel(), newInd))
             self.modelSelecter.update(newInd, y, self.X, self.Y)
             self.useModels.append(
                 self.modelSelecter.getModel().__class__.__name__)
@@ -87,6 +89,7 @@ class EGO:
         self.RMSE = [RMSE(dim, f, self.modelSelecter.getModel())]
         self.RMSE_G = [RMSE_G(dim, f, self.modelSelecter.getModel())]
         self.RMSE_P = [RMSE(dim, f, self.modelSelecter.getModel())]
+        self.RMSE_P_bef = [RMSE(dim, f, self.modelSelecter.getModel())]
         self.distance = [(0.0, 0.0)]
         self.useModels = [self.modelSelecter.getModel().__class__.__name__]
         self.__print()

@@ -43,6 +43,10 @@ def out(ego, func, dim, txt):
         for x in ego.RMSE_P:
             f.write(str(x)+", ")
         f.write("\n")
+    with open(dir+"rmsep_bef{}.csv".format(txt), "a") as f:
+        for x in ego.RMSE_P_bef:
+            f.write(str(x)+", ")
+        f.write("\n")
     with open(dir+"distance_{}.csv".format(txt), "a") as f:
         for a, m in ego.distance:
             f.write(str(a)+", "+str(m)+"\n")
