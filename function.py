@@ -42,6 +42,13 @@ def original2(x):
     return a+b
 
 
+def easyFunc(x):
+    val = 0.0
+    for t in x:
+        val += t**2
+    return val
+
+
 if __name__ == "__main__":
     plot(Rosenbrock, 1)
     plot(Rosenbrock, 2, True)
