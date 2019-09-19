@@ -1,2 +1,5 @@
 *.png
-*__pycache__/*
+*.txt
+*.csv
+*.pyc
+*.swp
