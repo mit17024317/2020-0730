@@ -4,7 +4,7 @@ import csv
 import GPy
 
 import numpy as np
-from gpyopt import f as func
+import gpyopt as gp
 
 from pyDOE import lhs
 
@@ -56,7 +56,7 @@ def gpr(x):
     dim = len(x[0])
     kernel = GPy.kern.RBF(dim)+GPy.kern.Matern32(dim)
 
-    y = np.array([func(np.array([t])) for t in x])
+    y = np.array([gp.f(np.array([t])) for t in x])
 
     model = GPy.models.GPRegression(x, y[:, None], kernel=kernel)
     model.optimize()
@@ -64,7 +64,7 @@ def gpr(x):
     return model
 
 
-def run():
+def run(init=5):
 
     x = []
     with open("./data/eval.txt") as f:
@@ -76,10 +76,10 @@ def run():
     x = np.array(x)
 
     dim = len(x[0])
-    for i in range(1, len(x)):
+    for i in range(init, len(x)):
         model = gpr(x[0:i])
-        print(RMSE(dim, func, model))
+        print(RMSE(dim, gp.f, model), end=",")
 
 
 if __name__ == "__main__":
-    run()
+    run(init=5)

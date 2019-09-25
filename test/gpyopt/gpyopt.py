@@ -1,3 +1,5 @@
+import sys
+
 import GPy
 import GPyOpt
 import numpy as np
@@ -10,10 +12,7 @@ def f(x):
     return np.sum(lst)/len(x[0])
 
 
-def run():
-
-    # parametes
-    dim = 4
+def run(dim=2, itr=10, init=5):
 
     # set designvariables
     bounds = [
@@ -23,14 +22,15 @@ def run():
 
     # set optimizer
     my = GPyOpt.methods.BayesianOptimization(
-        f=f, domain=bounds, initial_design_numdata=5, acquisition_type='EI')
+        f=f, domain=bounds, initial_design_numdata=init, acquisition_type='EI')
 
     # optimize
-    my.run_optimization(max_iter=50,
+    my.run_optimization(max_iter=itr,
                         evaluations_file="./data/eval.txt",
                         models_file="./data/model.txt",
                         report_file="./data/rep.txt",
                         )
+    print("-- optimize finish --", file=sys.stderr)
 
 
 if __name__ == "__main__":
