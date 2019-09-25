@@ -3,20 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 
-
-def generate(prob):
-
-    with open("{}/rmse_{}.csv".format(prob, name), "r") as f:
-        reader = csv.reader(f)
-        y = []
-        cnt = 0
-        for row in reader:
-            cnt += 1
-            y = toF(row[:-1]) if y == [] else add(y, toF(row[:-1]))
-        x = [x+50 for x in range(len(y))]
-        # y軸小数点以下3桁表示
-
-
 def getY():
     ar = np.array(list(map(float, input().split(",")[:-1])))
     cnt = 1
