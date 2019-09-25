@@ -37,7 +37,8 @@ def RMSE(dim, func, model, size=10000):
 
     sum = 0.0
     for data in RMSE.dataset[dim]:
-        sum += (func(np.array([data]))-model.predict(np.array([data]))[0][0][0])**2
+        sum += (func(np.array([data])) -
+                model.predict(np.array([data]))[0][0][0])**2
     rmse = np.sqrt(sum/size)
 
     return rmse
@@ -54,21 +55,33 @@ def f(x):
         lst += x[:, i]**2
     return np.sum(lst)/50
 
+
 def g(x):
     return np.cos(1.5*x) + 0.1*x
 
+
 if __name__ == "__main__":
+
+    # parametes
+    dim = 4
+
+    # set designvariables
     bounds = [
         {'name': 'x{}'.format(x), 'type': 'continuous', 'domain': (-1, 1)}
-        for x in range(1)
+        for x in range(dim)
     ]
-    myBopt = GPyOpt.methods.BayesianOptimization(
-        f=g, domain=bounds, initial_design_numdata=5, acquisition_type='EI')
 
-    myBopt.run_optimization(max_iter=1)
-    print(RMSE(1, f, myBopt.model))
-    for _ in range(50):
-        myBopt.run_optimization(max_iter=10)
-        print(RMSE(1, f, myBopt.model))
+    # set optimizer 
+    my = GPyOpt.methods.BayesianOptimization(
+        f=f, domain=bounds, initial_design_numdata=5, acquisition_type='EI')
 
-    print(myBopt.fx_opt)
+    # optimize
+    my.run_optimization(max_iter=1, 
+                        evaluations_file="./data/eval.txt",
+                        models_file="./data/model.txt",
+                        report_file="./data/rep.txt",
+                        )
+    
+    # output
+    print(RMSE(dim, f, my.model))
+    print(my.x_opt, my.fx_opt, sep=" -> ")
