@@ -1,6 +1,5 @@
 
 import numpy as np
-import problem
 from pyDOE import lhs
 
 
@@ -27,24 +26,29 @@ class BasisVector():
 
 class Model():
     def __init__(self, X, Y, wDim = 2):
-        self.w = self.__calcWeight(X, Y, wDim)
+        self.bv = BasisVector(wDim)
+        self.w = self.__calcWeight(X, Y)
 
-    def __calcWeight(self, X, Y, wDim):
-        bv = BasisVector(wDim)
-        phi = np.array([bv.get(x) for x in X])
+    def __calcWeight(self, X, Y):
+        phi = np.array([self.bv.get(x) for x in X])
         return np.dot(np.dot(
             np.linalg.inv(np.dot(phi.T, phi)),
             phi.T),
             Y)
+
+    def getPredict(self, x):
+        return [np.sum(self.w*self.bv.get(x)), 0.0]
 
 
 if __name__ == "__main__":
     dim = 10
     size = 50
 
+    def f(x):
+        return x[0] * x[1] + x[0] + x[1]
+
     x = np.array([[s[i] for i in range(dim)] for s in lhs(dim, size)])
-    y = np.array([problem.f(i) for i in x])
+    y = np.array([f(i) for i in x])
 
     model = Model(x, y, wDim = 3)
     w = model.w
-    print(w)
