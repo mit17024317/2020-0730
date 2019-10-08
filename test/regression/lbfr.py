@@ -14,12 +14,12 @@ class BasisVector():
         if dim == self.dim:
             return ar
 
-        ar = np.append(ar, [self.__addX(x, val, dim+1, i) for i in range(frm+1, len(x))])
+        ar = np.append(ar, [self.__addX(x, val, dim+1, i) for i in range(frm, len(x))])
         return np.hstack(ar)
 
 
     def get(self, x):
-        self.dim = min(len(x), self.dim)
+        # self.dim = min(len(x), self.dim)
         ar = [self.__addX(x, 1, 1, frm) for frm in range(len(x))]
         return np.hstack(ar)
 
@@ -32,7 +32,7 @@ class Model():
     def __calcWeight(self, X, Y):
         phi = np.array([self.bv.get(x) for x in X])
         return np.dot(np.dot(
-            np.linalg.inv(np.dot(phi.T, phi)),
+            np.linalg.inv(np.dot(phi.T, phi)) + np.identity(len(phi[0]))*1e-9,
             phi.T),
             Y)
 
