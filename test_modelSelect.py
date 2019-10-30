@@ -1,5 +1,5 @@
 import pytest
-from testModel import testModel, testFunc
+from function_t import testModel, testFunc
 from modelSelect import WeightRecentModel, WeightAddModel, SelectModel
 
 

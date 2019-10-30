@@ -1,8 +1,7 @@
 
 import numpy as np
 import pytest
-from testModel import testFunc
-from testModel import testModel
+from function_t import testFunc, testModel
 
 
 @pytest.fixture()

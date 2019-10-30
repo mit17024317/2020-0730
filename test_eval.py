@@ -1,6 +1,6 @@
 import pytest
 from eval import *
-from testModel import testFunc, testModel
+from function_t import testFunc, testModel
 
 
 @pytest.mark.parametrize(("dim"), [

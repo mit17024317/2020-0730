@@ -11,6 +11,7 @@ numpy = "*"
 pydoe = "*"
 gpy = "*"
 scikit-fuzzy = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"
