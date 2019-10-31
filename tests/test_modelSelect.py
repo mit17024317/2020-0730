@@ -1,6 +1,11 @@
 import pytest
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from function_t import testModel, testFunc
-from modelSelect import WeightRecentModel, WeightAddModel, SelectModel
+from models.modelSelect import WeightRecentModel, WeightAddModel, SelectModel
 
 
 class TestWeightRecentModel:

@@ -1,5 +1,9 @@
+import os
+import sys
 
-from model import modelInterface
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from models.model import modelInterface
 
 
 def testFunc(x=[]):

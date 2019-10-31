@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 from pyDOE import lhs
-from model import FuzzyCM
-from model import GroupingModel
-from modelSelect import SelectModel
 from scipy import integrate
 from scipy.stats import norm
-from eval import RMSE, RMSE_G, RMSE_P, distanceValue
+
+from models.model import FuzzyCM, GroupingModel
+from models.modelSelect import SelectModel
+from models.eval import RMSE, RMSE_G, RMSE_P, distanceValue
 
 
 class EGO:

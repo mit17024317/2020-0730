@@ -1,6 +1,10 @@
-
 import pytest
-from function import original2
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from functions.function import original2
 
 
 @pytest.mark.parametrize(("x", "y"), [

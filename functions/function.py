@@ -1,4 +1,4 @@
-from createGraph import plot
+from functions.createGraph import plot
 import numpy as np
 
 

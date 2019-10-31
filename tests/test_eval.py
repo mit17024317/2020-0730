@@ -1,5 +1,11 @@
 import pytest
-from eval import *
+import os
+import sys
+import numpy as np
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from models.eval import distanceValue, RMSE, RMSE_G, RMSE_P
 from function_t import testFunc, testModel
 
 

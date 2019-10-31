@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 import os
 import numpy as np
-from ego import EGO
+from optimizer.ego import EGO
 
-from model import FuzzyCM
-from model import GroupingModel
+from models.model import FuzzyCM, GroupingModel
 
-from function import Schwefel
-from function import Rosenbrock
-from function import Rastrigin
-import function
+from functions.function import Schwefel, Rosenbrock, Rastrigin
+import functions.function as function
 
 
 def createDir(func, dim):

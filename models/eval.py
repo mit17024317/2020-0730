@@ -4,13 +4,13 @@ Evalation method
 """
 
 import sys
-from model import FuzzyCM
-from model import GPR
 from pyDOE import lhs
 import matplotlib.pyplot as plt
 import numpy as np
 import random
 import statistics
+
+from models.model import FuzzyCM, GPR
 
 
 def RMSE(dim, func, model, size=10000):

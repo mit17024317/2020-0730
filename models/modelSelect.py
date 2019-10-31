@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import numpy as np
-from model import FuzzyCM
-from model import GroupingModel
 from pyDOE import lhs
 
+from models.model import FuzzyCM, GroupingModel
 
 class WeightRecentModel:
     def __init__(self, model, X, Y):
