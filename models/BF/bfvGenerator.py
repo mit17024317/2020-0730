@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import copy
 
-from basisFunction import *
+from .basisFunction import *
 
 
 class BFVGeneratorInterface(ABC):
@@ -60,7 +60,7 @@ class QuadraticFunction(BFVGeneratorInterface):
             def __init__(self, v):
                 self.dif = v
             def f(self, x:list):
-                return (x-self.dif)**2
+                return np.sum((x-self.dif)**2)
         # add dif 
         def add(v, dif):
             j = 0
@@ -78,12 +78,12 @@ class QuadraticFunction(BFVGeneratorInterface):
         difV = np.array([dif for _ in range(dim)])
 
         # add moved quadratic
-        bfv = [MoveQuadratic(copy.deepcopy(difV)).f]
+        bfv = [MoveQuadratic(copy.deepcopy(difV))]
         for _ in range(np.power(div,dim)-1):
             difV = add(difV, dif)
-            bfv.append(MoveQuadratic(copy.deepcopy(difV)).f)
+            bfv.append(MoveQuadratic(copy.deepcopy(difV)))
 
-        return np.array(bfv)
+        return bfv
 
     def getBFV(self):
         """

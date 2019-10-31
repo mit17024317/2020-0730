@@ -6,6 +6,7 @@ import numpy as np
 __author__ = "R.Nakata"
 __date__ = "2019/11/01"
 
+
 class BasisFunction():
     """
     basis function class
@@ -61,7 +62,10 @@ class BasisFunctionVector():
         bf : BasisFunction
             new basis function
         """
-        self.__bfv.append(bf)
+        if type(bf) is list:
+            self.__bfv += bf
+        else:
+            self.__bfv.append(bf)
 
     def f(self, x: list):
         """
@@ -80,6 +84,7 @@ class BasisFunctionVector():
         fv = [bf.f(x) for bf in self.__bfv]
         return fv
 
+
 if __name__ == "__main__":
     # basis function vector
     bfv = BasisFunctionVector()
@@ -88,10 +93,9 @@ if __name__ == "__main__":
     bfv.add(BasisFunction(lambda x: x[1]*x[1]))
     bfv.add(BasisFunction(lambda x: x[0]))
     bfv.add(BasisFunction(lambda x: x[1]))
-    
+
     # point
     p = np.array([5, 4])
     print(bfv.f(p))
-    p = np.array([1,2])
+    p = np.array([1, 2])
     print(bfv.f(p))
-

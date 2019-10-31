@@ -4,7 +4,7 @@
 import numpy as np
 from pyDOE import lhs
 
-from BF.basisFunction import *
+from .BF.basisFunction import *
 
 __author__ = "R.Nakata"
 __date__ = "2019/11/01"
