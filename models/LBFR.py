@@ -72,7 +72,7 @@ class LBFR():
         val : float
             predict value
         """
-        val = [np.sum(self.w*self.bv.get(x)), 0.0]
+        val = [np.sum(self.w*self.bfv.f(x)), 0.0]
         return val
 
 

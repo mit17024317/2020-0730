@@ -16,7 +16,7 @@ def plot2D(f, s=False):
     plt.xlabel("X")
     plt.ylabel("Y")
 
-    plt.savefig("./graph/2D.png")
+    plt.savefig("./functions/graph/2D.png")
     if s:
         plt.show()
     plt.close()
@@ -49,7 +49,7 @@ def plot3D(f, s=False):
 
     ax.plot_wireframe(X1, X2, Y, color="darkblue")
 
-    plt.savefig("./graph/3D.png")
+    plt.savefig("./functions/graph/3D.png")
     if s:
         plt.show()
     plt.close()

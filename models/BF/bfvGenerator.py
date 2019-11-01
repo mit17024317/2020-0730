@@ -26,6 +26,8 @@ class QuadraticFunction(BFVGeneratorInterface):
     ----------
     bfv : BasisFunctionVector
         basis function vector 
+    centerPoint : list<list>
+        Quadratic Function's center point
     """
 
     def __init__(self, dim: int, div: int = 10):
@@ -37,6 +39,7 @@ class QuadraticFunction(BFVGeneratorInterface):
         div: int
             divide num (vector size = 2*pow(div, dim))
         """
+        self.centerPoint = []
         self.__bfv = self.__generate(dim, div)
 
     def __generate(self, dim: int, div: int):
@@ -78,10 +81,14 @@ class QuadraticFunction(BFVGeneratorInterface):
         difV = np.array([dif for _ in range(dim)])
 
         # add moved quadratic
-        bfv = [MoveQuadratic(copy.deepcopy(difV))]
+        v = copy.deepcopy(difV)
+        bfv = [MoveQuadratic(v)]
+        self.centerPoint.append(v)
         for _ in range(np.power(div,dim)-1):
             difV = add(difV, dif)
-            bfv.append(MoveQuadratic(copy.deepcopy(difV)))
+            v = copy.deepcopy(difV)
+            bfv.append(MoveQuadratic(v))
+            self.centerPoint.append(v)
 
         return bfv
 
