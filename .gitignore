@@ -3,5 +3,6 @@
 *.csv
 *.pyc
 *.swp
-*/parameters/*
+*.json
+*/pyteset_cache/*
 *__pycache__/*
