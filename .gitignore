@@ -6,3 +6,4 @@
 *.json
 */pyteset_cache/*
 *__pycache__/*
+*/out/*
