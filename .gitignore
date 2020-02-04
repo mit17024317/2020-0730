@@ -4,6 +4,11 @@
 *.pyc
 *.swp
 *.json
+
 */pyteset_cache/*
 *__pycache__/*
+*/.mypy_cache/*
 */out/*
+
+Parameters/*
+!sample.cson
