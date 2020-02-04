@@ -13,6 +13,7 @@ gpy = "*"
 scikit-fuzzy = "*"
 pytest = "*"
 typing = "*"
+cson = "*"
 
 [requires]
 python_version = "3.8"

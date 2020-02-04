@@ -1,11 +1,10 @@
 import os
 import sys
-from typing import TypeVar
 
 import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
-module = __import__("Functions", fromlist=["FunctionInterface", "BenchmarkFunctions"])
+module = __import__("Functions", fromlist=["BenchmarkFunctions"])
 
 
 class TestRosenbrock:
