@@ -1,3 +1,6 @@
+# REVIEW: 関数を多目的対応させたので調整が必要
+# HACK: 必要になった場合にドキュメント等を追加
+
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import axes3d

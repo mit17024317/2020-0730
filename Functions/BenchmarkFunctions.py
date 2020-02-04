@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test Function Interface."""
+"""Benchmark Function Interface."""
 
 __author__ = "R.Nakata"
 __date__ = "2020/02/04"
