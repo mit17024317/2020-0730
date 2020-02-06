@@ -11,6 +11,7 @@ import numpy as np
 
 from Functions.FunctionInterface import FunctionInterface
 
+from .Acquisition.EI import EI
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
 
@@ -31,5 +32,24 @@ class SurrogateOptimizer:
         initializer: SamplingInterface = LatinHypercubeSampling(),
     ) -> List[np.ndarray]:
 
-        pop: List[np.ndarray] = initializer.Sampling(5, dim)
-        return pop
+        # Initialize
+        popX: List[np.ndarray] = initializer.Sampling(5, dim)
+        popY: List[np.ndarray] = [np.array([prob.f(x)]) for x in popX]
+
+        # generate and update
+        newIndiv = self.__search()
+        popX.append(newIndiv)
+
+        return popY
+
+    def __search(self) -> np.ndarray:
+        """
+        Search new individual with acqusition function
+        """
+        # TODO: 後でクラスに切り出す
+
+        # TODO:Interfaceを使う
+        af: EI = EI()
+        ei = af.f(5.0, 1.0, 3.0)
+        print(ei)
+        return np.array([1, 1])

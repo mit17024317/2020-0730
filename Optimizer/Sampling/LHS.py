@@ -31,6 +31,6 @@ class LatinHypercubeSampling:
         pop: List<np.ndarray<float>>
             initial poplation
         """
-        sample: np.ndarray = lhs(d, n, "c")
+        sample: np.ndarray = lhs(d, n)
         pop: List[np.ndarray] = [np.array(s) for s in sample]
         return pop
