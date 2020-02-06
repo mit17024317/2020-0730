@@ -7,6 +7,7 @@ __date__ = "2020/02/07"
 from typing import Protocol
 
 import numpy as np
+from scipy.stats import norm
 
 
 class EI:
@@ -32,4 +33,6 @@ class EI:
         av: float
             acquisition value
         """
-        ...
+        s: float = np.sqrt(var)
+        nm: float = (basis - mean) / s
+        return nm * s * norm.cdf(nm, 0, 1) + s * norm.pdf(nm, 0, 1)
