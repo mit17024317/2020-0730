@@ -5,6 +5,8 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/07"
 
 
+from typing import List
+
 import numpy as np
 
 from Functions.FunctionInterface import FunctionInterface
@@ -27,7 +29,7 @@ class SurrogateOptimizer:
         obj: int,
         dim: int,
         initializer: SamplingInterface = LatinHypercubeSampling(),
-    ) -> np.ndarray:
+    ) -> List[np.ndarray]:
 
-        pop: np.ndarray = initializer.Sampling(5)
+        pop: List[np.ndarray] = initializer.Sampling(5, dim)
         return pop
