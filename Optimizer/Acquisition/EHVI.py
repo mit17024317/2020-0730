@@ -16,15 +16,15 @@ class EHVI:
     Approximation of Expected Hypervolume Improvement.
     """
 
-    def f(self, mean: np.ndarray, var: np.ndarray, pops: List[np.ndarray]) -> float:
+    def f(self, mean: List[float], var: List[float], pops: List[np.ndarray]) -> float:
         """
         Acquisition function
 
         Parameters
         ----------
-        mean: np.ndarray
+        mean: List[float] 
             mean
-        var: np.ndarray
+        var: List[float]
             variance
         pops: List<np.ndarray>
             all populations
