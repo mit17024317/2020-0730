@@ -11,6 +11,7 @@ import numpy as np
 
 from Functions.FunctionInterface import FunctionInterface
 
+from .Acquisition.EHVI import EHVI
 from .Acquisition.EI import EI
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
@@ -51,5 +52,11 @@ class SurrogateOptimizer:
         # TODO:Interfaceを使う
         af: EI = EI()
         ei = af.f(5.0, 1.0, 3.0)
-        print(ei)
+
+        afm: EHVI = EHVI()
+        lst: List[List[float]] = [[3.0]]
+        ehvi: float = afm.f(
+            np.array([1]), np.array([1.0]), [np.array([l]) for l in lst]
+        )
+        print(ei, ehvi)
         return np.array([1, 1])

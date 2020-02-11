@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Expected Improvement"""
+# TODO:インターフェースにのせる
 
 __author__ = "R.Nakata"
 __date__ = "2020/02/07"

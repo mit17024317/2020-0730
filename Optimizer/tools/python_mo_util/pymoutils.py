@@ -30,10 +30,11 @@ if platform == "darwin":
     libhv = npct.load_library("libhv", ".")
     libgd = npct.load_library("libgd", ".")
 else:
-    libeps = npct.load_library("./python_mo_util/libeps.so", ".")
-    libpf = npct.load_library("./python_mo_util/libpf.so", ".")
-    libhv = npct.load_library("./python_mo_util/libhv.so", ".")
-    libgd = npct.load_library("./python_mo_util/libgd.so", ".")
+    libeps = npct.load_library(
+        "./Optimizer/tools/python_mo_util/libeps.so", ".")
+    libpf = npct.load_library("./Optimizer/tools/python_mo_util/libpf.so", ".")
+    libhv = npct.load_library("./Optimizer/tools/python_mo_util/libhv.so", ".")
+    libgd = npct.load_library("./Optimizer/tools/python_mo_util/libgd.so", ".")
 ##########################################################################
 # define the arg and res type for each of the functions:
 # 1. epsilon library

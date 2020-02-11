@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 """Acquisition function interface."""
-
+"""
+いい感じのインターフェースを考えられなかったので，
+本クラスは現状未使用である(2020/02/12)
+"""
 __author__ = "R.Nakata"
 __date__ = "2020/02/07"
+
+
+
 
 from typing import Protocol
 
