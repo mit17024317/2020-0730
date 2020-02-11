@@ -7,6 +7,7 @@ __date__ = "2020/02/04"
 
 from .BenchmarkFunctions import Rastrigin, Rosenbrock, Schwefel
 from .FunctionInterface import FunctionInterface
+from .ZDT import ZDT4, ZDT6
 
 
 def selectFunction(name: str) -> FunctionInterface:
@@ -30,5 +31,9 @@ def selectFunction(name: str) -> FunctionInterface:
         return Rosenbrock()
     if name == "Schwefel":
         return Schwefel()
+    if name == "ZDT4":
+        return ZDT4()
+    if name == "ZDT6":
+        return ZDT6()
 
     assert False, f'Function "{name}" is not defined.'
