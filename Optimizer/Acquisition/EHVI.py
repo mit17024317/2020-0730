@@ -8,6 +8,7 @@ __date__ = "2020/02/12"
 from typing import List
 
 import numpy as np
+from numpy.random import normal
 
 
 class EHVI:
@@ -33,4 +34,21 @@ class EHVI:
         av: float
             Expected Hypervolume Improvement.
         """
-        return 1.0
+        from tools.python_mo_util.pymoutils import compute_pyhv
+
+        DIM: int = len(mean)
+        ip: np.ndarray = np.array([1.0 for _ in range(DIM)])
+
+        # モンテカルロ積分
+        hv: float = compute_pyhv(pops, ip)
+        hv_sum: float = 0.0
+        size: int = 10000
+        for x in [
+            np.array([normal(m, v) for m, v in zip(mean, var)]) for _ in range(size)
+        ]:
+            pops.append(x)
+            hv_sum += np.max([compute_pyhv(pops, ip) - hv, 0.0])
+            pops.pop()
+        ehvi = hv_sum / size
+
+        return ehvi
