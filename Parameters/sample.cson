@@ -1,10 +1,13 @@
 {
 	# 目的数
-	obj: 1,
+	obj: 2,
 
 	# 設計変数数
 	dim: 3,
 
 	# 対象問題(可能な問題一覧:Functions/FunctionSelecter)
-	problem: "Rastrigin",
+	problem: "ZDT4",
+
+	# 手法(EHVI，Original)
+	method: "EHVI"
 }

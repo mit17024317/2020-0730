@@ -42,7 +42,7 @@ class EHVI:
         # モンテカルロ積分
         hv: float = compute_pyhv(pops, ip)
         hv_sum: float = 0.0
-        size: int = 10000
+        size: int = 1000
         for x in [
             np.array([normal(m, v) for m, v in zip(mean, var)]) for _ in range(size)
         ]:

@@ -4,7 +4,7 @@
 __author__ = "R.Nakata"
 __date__ = "2020/02/07"
 
-
+from logging import DEBUG, basicConfig, getLogger
 from typing import List, Tuple
 
 import numpy as np
@@ -13,11 +13,14 @@ from numpy.random import rand
 from Functions.FunctionInterface import FunctionInterface
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
+from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
 from .Acquisition.EHVI import EHVI
 from .Acquisition.EI import EI
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
+
+logger = getLogger(__name__)
 
 
 class SurrogateOptimizer:
@@ -26,7 +29,8 @@ class SurrogateOptimizer:
     """
 
     # TODO: Modelを受け取る
-    def __init__(self) -> None:
+    def __init__(self, method: str) -> None:
+        self.method = method
         ...
 
     def optimize(
@@ -43,22 +47,24 @@ class SurrogateOptimizer:
 
         # generate and update
         for _ in range(30):
+            logger.info(f"{_}世代")
             newIndiv: np.ndarray = self.__search(popX, popY)
             popX.append(newIndiv)
             popY.append(prob.f(newIndiv))
+            ip = [1.0 for _ in range(2)]
+            hv: float = compute_pyhv(popY, ip)
+            print(hv)
 
         return popY
 
-    def __search(
-        self, popX: List[np.ndarray], popY: List[np.ndarray], key: str = "original"
-    ) -> np.ndarray:
+    def __search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
         """
         Search new individual with acqusition function
         """
         # TODO: 後でクラスに切り出す
-        if key == "EHVI":
+        if self.method == "EHVI":
             return self.___EHVI(popX, popY)
-        if key == "original":
+        if self.method == "original":
             return self.___original(popX, popY)
         else:
             assert False, "早くインターフェスを作る！"
@@ -82,7 +88,7 @@ class SurrogateOptimizer:
         # TODO:Interfaceを使う
         afm: EHVI = EHVI()
         # TODO:CMA-ESの導入
-        searchSize: int = 1
+        searchSize: int = 100
         newIndiv: np.ndarray
         ehvi_max: float = -1.0
         for x in [np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)]:
@@ -109,7 +115,7 @@ class SurrogateOptimizer:
         # 各重みベクトルごとに候補解でのEI値を求めてソート
         af = EI()
         obj: int = len(popY[0])
-        gn: int = 10
+        gn: int = 100
         gs: List[List[float]] = [[rand() for _ in range(obj)]
                                  for __ in range(gn)]
         sortList: List[Tuple[float, BayesianModelInterface, float]] = []
@@ -123,7 +129,7 @@ class SurrogateOptimizer:
         sortList = reversed(sorted(sortList, key=lambda x: x[0]))
 
         # EI値による探索
-        searchSize: int = 1
+        searchSize: int = 100
         newIndiv: np.ndarray
         ei_max: float = -1.0
         for _, model, basis in list(sortList)[:5]:
