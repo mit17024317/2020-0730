@@ -17,6 +17,6 @@
 	# 対象問題(可能な問題一覧:Functions/FunctionSelecter)
 	problem: "ZDT4",
 
-	# 手法(EHVI，Original)
+	# 手法(EHVI，original)
 	method: "EHVI"
 }
