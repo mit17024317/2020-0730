@@ -35,12 +35,13 @@ if __name__ == "__main__":
         dim: int = parameter["dim"]
         name: str = parameter["problem"]
         method: str = parameter["method"]
+        mEval: int = parameter["mEval"]
 
         p: FunctionInterface = selectFunction(name)
 
         # optimize start
         logger.info("-- start optimization --")
-        opt: SurrogateOptimizer = SurrogateOptimizer(method)
+        opt: SurrogateOptimizer = SurrogateOptimizer(method, mEval)
         opt.optimize(
             trial=trial, prob=p, obj=obj, dim=dim, initialNum=ini, generations=gen
         )

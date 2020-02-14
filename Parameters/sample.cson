@@ -19,4 +19,7 @@
 
 	# 手法(EHVI，original)
 	method: "EHVI"
+
+	# 各探索メカニズムにおけるモデル上評価回数
+	mEval:1000
 }

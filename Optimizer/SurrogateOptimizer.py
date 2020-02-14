@@ -29,8 +29,9 @@ class SurrogateOptimizer:
     """
 
     # TODO: Modelを受け取る
-    def __init__(self, method: str) -> None:
+    def __init__(self, method: str, mEval: int = 1000) -> None:
         self.method = method
+        self.__mEval = mEval
         ...
 
     def optimize(
@@ -92,7 +93,7 @@ class SurrogateOptimizer:
         # TODO:Interfaceを使う
         afm: EHVI = EHVI()
         # TODO:CMA-ESの導入
-        searchSize: int = 100
+        searchSize: int = self.__mEval
         newIndiv: np.ndarray
         ehvi_max: float = -1.0
         for x in [np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)]:
@@ -131,7 +132,7 @@ class SurrogateOptimizer:
         sortList = reversed(sorted(sortList, key=lambda x: x[0]))
 
         # EI値による探索
-        searchSize: int = 100
+        searchSize: int = self.__mEval
         newIndiv: np.ndarray
         ei_max: float = -1.0
         for _, model, basis in list(sortList)[:5]:
