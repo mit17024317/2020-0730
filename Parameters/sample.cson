@@ -18,5 +18,5 @@
 	problem: "ZDT4",
 
 	# 手法(EHVI，original)
-	method: "EHVI"
+	method: "original"
 }
