@@ -42,23 +42,24 @@ class SurrogateOptimizer:
         initialNum: int = 5,
         generations: int = 30,
         initializer: SamplingInterface = LatinHypercubeSampling(),
-    ) -> List[np.ndarray]:
+    ) -> None:
+        # TODO: 返り値について考える
 
-        # Initialize
-        popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
-        popY: List[np.ndarray] = [np.array(prob.f(x)) for x in popX]
+        # n trial
+        for __ in range(trial):
+            # Initialize
+            popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
+            popY: List[np.ndarray] = [np.array(prob.f(x)) for x in popX]
 
-        # generate and update
-        for _ in range(generations):
-            logger.info(f"{_}世代")
-            newIndiv: np.ndarray = self.__search(popX, popY)
-            popX.append(newIndiv)
-            popY.append(prob.f(newIndiv))
-            ip = [1.0 for _ in range(2)]
-            hv: float = compute_pyhv(popY, ip)
-            print(hv)
-
-        return popY
+            # generate and update
+            for _ in range(generations):
+                logger.info(f"{_}世代")
+                newIndiv: np.ndarray = self.__search(popX, popY)
+                popX.append(newIndiv)
+                popY.append(prob.f(newIndiv))
+                ip = [1.0 for _ in range(2)]
+                hv: float = compute_pyhv(popY, ip)
+                print(hv)
 
     def __search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
         """

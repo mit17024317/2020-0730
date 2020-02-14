@@ -41,6 +41,6 @@ if __name__ == "__main__":
         # optimize start
         logger.info("-- start optimization --")
         opt: SurrogateOptimizer = SurrogateOptimizer(method)
-        ans = opt.optimize(
+        opt.optimize(
             trial=trial, prob=p, obj=obj, dim=dim, initialNum=ini, generations=gen
         )
