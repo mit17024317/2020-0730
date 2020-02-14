@@ -4,6 +4,8 @@
 __author__ = "R.Nakata"
 __date__ = "2020/02/06"
 
+import logging
+import warnings
 from typing import List, Tuple
 
 import GPy
@@ -30,13 +32,15 @@ class GPR:
         samplY: np.ndarray<m>
             objective variables of sample points
         """
-        DIM: int = len(sampleX[0])
-        kernel: GPy.kern = GPy.kern.sde_RBF(DIM) + GPy.kern.Matern32(DIM)
-        self.__model: GPy.model = GPy.models.GPRegression(
-            sampleX, sampleY[:, None], kernel=kernel
-        )
-        self.__model.optimize(max_iters=100000)
-        self.debug = self.__model
+        # disable logger output and warnings
+        with self.__DisableRunnningInfomation():
+            DIM: int = len(sampleX[0])
+            kernel: GPy.kern = GPy.kern.sde_RBF(DIM) + GPy.kern.Matern32(DIM)
+            self.__model: GPy.model = GPy.models.GPRegression(
+                sampleX, sampleY[:, None], kernel=kernel
+            )
+            self.__model.optimize(max_iters=100000)
+            self.debug = self.__model
 
     def getPredictValue(self, x: np.ndarray) -> float:
         """
@@ -75,3 +79,18 @@ class GPR:
         m: float = ml[0][0]
         v: float = vl[0][0]
         return m, v
+
+    class __DisableRunnningInfomation:
+        """
+        disable logging and warnings, use as below
+        with __DisableRunnningInfomation():
+            do_something()
+        """
+
+        def __enter__(self):
+            logging.disable(logging.INFO)
+            warnings.simplefilter("ignore")
+
+        def __exit__(self, _, __, ___):
+            logging.disable(logging.NOTSET)
+            warnings.resetwarnings()

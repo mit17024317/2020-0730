@@ -38,15 +38,17 @@ class SurrogateOptimizer:
         prob: FunctionInterface,
         obj: int,
         dim: int,
+        initialNum: int,
+        generations: int,
         initializer: SamplingInterface = LatinHypercubeSampling(),
     ) -> List[np.ndarray]:
 
         # Initialize
-        popX: List[np.ndarray] = initializer.Sampling(5, dim)
+        popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
         popY: List[np.ndarray] = [np.array(prob.f(x)) for x in popX]
 
         # generate and update
-        for _ in range(30):
+        for _ in range(generations):
             logger.info(f"{_}世代")
             newIndiv: np.ndarray = self.__search(popX, popY)
             popX.append(newIndiv)
