@@ -11,14 +11,15 @@ import numpy as np
 from numpy.random import rand
 
 from Functions.FunctionInterface import FunctionInterface
-from Models.GPR import GPR
-from Models.ModelInterface import BayesianModelInterface
 from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
-from .Acquisition.EHVI import EHVI
-from .Acquisition.EI import EI
+from .Models.GPR import GPR
+from .Models.ModelInterface import BayesianModelInterface
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
+from .Search.Acquisition.EHVI import EHVI
+from .Search.Acquisition.EI import EI
+from .Search.Normal import NormalAlgorithm
 
 logger = getLogger(__name__)
 
@@ -66,7 +67,8 @@ class SurrogateOptimizer:
         """
         # TODO: 後でクラスに切り出す
         if self.method == "EHVI":
-            return self.___EHVI(popX, popY)
+            s = NormalAlgorithm()
+            return s.search(popX, popY)
         if self.method == "original":
             return self.___original(popX, popY)
         else:
@@ -85,28 +87,6 @@ class SurrogateOptimizer:
     """
     以下は全て実験用のゴミコードである
     """
-
-    def ___EHVI(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
-        DIM: int = len(popX[0])
-        # TODO:Interfaceを使う
-        afm: EHVI = EHVI()
-        # TODO:CMA-ESの導入
-        searchSize: int = 100
-        newIndiv: np.ndarray
-        ehvi_max: float = -1.0
-        for x in [np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)]:
-            models: List[BayesianModelInterface] = self.__generageModel(popX, popY)
-            ms: List[float] = []
-            vs: List[float] = []
-            for model in models:
-                m, v = model.getPredictDistribution(x)
-                ms.append(m)
-                vs.append(v)
-            ehvi: float = afm.f(ms, vs, popY)
-            if ehvi > ehvi_max:
-                ehvi_max = ehvi
-                newIndiv = x
-        return newIndiv
 
     def ___original(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
         DIM: int = len(popX[0])
@@ -141,5 +121,3 @@ class SurrogateOptimizer:
                 ei = af.f(m, v, basis)
                 if ei > ei_max:
                     ei_max = ei
-                    newIndiv = x
-        return newIndiv
