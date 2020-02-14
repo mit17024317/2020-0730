@@ -23,8 +23,7 @@ class ZDT4:
 class ZDT6:
     def f(self, x: np.ndarray) -> np.ndarray:
         N: int = len(x)
-        f1: float = 1 - np.exp(-4 * x[0]) * \
-            np.power(np.sin(6 * np.pi * x[0]), 6)
+        f1: float = 1 - np.exp(-4 * x[0]) * np.power(np.sin(6 * np.pi * x[0]), 6)
         g: float = 1 + 9 * np.power(np.sum(x[1:]) / (N - 1), 1 / 4)
         f2: float = g * (1 - np.power(f1 / g, 2)) / 10
         return np.array([f1, f2])

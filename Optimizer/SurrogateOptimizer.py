@@ -35,11 +35,12 @@ class SurrogateOptimizer:
 
     def optimize(
         self,
+        trial: int,
         prob: FunctionInterface,
         obj: int,
         dim: int,
-        initialNum: int,
-        generations: int,
+        initialNum: int = 5,
+        generations: int = 30,
         initializer: SamplingInterface = LatinHypercubeSampling(),
     ) -> List[np.ndarray]:
 
@@ -94,8 +95,7 @@ class SurrogateOptimizer:
         newIndiv: np.ndarray
         ehvi_max: float = -1.0
         for x in [np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)]:
-            models: List[BayesianModelInterface] = self.__generageModel(
-                popX, popY)
+            models: List[BayesianModelInterface] = self.__generageModel(popX, popY)
             ms: List[float] = []
             vs: List[float] = []
             for model in models:
@@ -118,8 +118,7 @@ class SurrogateOptimizer:
         af = EI()
         obj: int = len(popY[0])
         gn: int = 100
-        gs: List[List[float]] = [[rand() for _ in range(obj)]
-                                 for __ in range(gn)]
+        gs: List[List[float]] = [[rand() for _ in range(obj)] for __ in range(gn)]
         sortList: List[Tuple[float, BayesianModelInterface, float]] = []
         for i, g in enumerate(gs):
             Y = np.array([np.sum(np.array(g) * y) for y in popY])

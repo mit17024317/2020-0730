@@ -15,8 +15,7 @@ class TestEHVI:
             (np.array([0.4]), np.array([1.0]), [np.array([0.5])]),
             (np.array([0]), np.array([1]), [np.array([0.8]), np.array([0.1])]),
             (np.array([0.3]), np.array([0.2]), [np.array([0.2])]),
-            (np.array([0.5]), np.array([1.3]), [
-             np.array([0.6]), np.array([0.7])]),
+            (np.array([0.5]), np.array([1.3]), [np.array([0.6]), np.array([0.7])]),
         ],
     )
     def test_f_1dim(self, mean, var, pops) -> float:

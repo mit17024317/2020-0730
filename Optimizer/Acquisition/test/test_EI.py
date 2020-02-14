@@ -12,7 +12,7 @@ module = __import__("Acquisition", fromlist=["EI"])
 class TestEI:
     @pytest.mark.parametrize(
         ("mean", "var", "base"),
-        [(0.0, 1.0, 0.5), (0.8, 0.1, 0.3), (0.1, 1.3, 0.7), (0.4, 0.1, 0.3), ],
+        [(0.0, 1.0, 0.5), (0.8, 0.1, 0.3), (0.1, 1.3, 0.7), (0.4, 0.1, 0.3),],
     )
     def test_f(self, mean, var, base) -> float:
         # 厳密解

@@ -8,8 +8,6 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/07"
 
 
-
-
 from typing import Protocol
 
 import numpy as np

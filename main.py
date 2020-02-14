@@ -12,7 +12,8 @@ logger = getLogger(__name__)
 args = sys.argv
 
 if __name__ == "__main__":
-    basicConfig(level=DEBUG)
+    formatter = "%(levelname)s: %(message)s"
+    basicConfig(level=DEBUG, format=formatter)
 
     # parameter check
     if len(args) < 2:
@@ -27,6 +28,7 @@ if __name__ == "__main__":
         parameter = cson.load(f)
 
         # each parameters
+        trial: int = parameter["trial"]
         ini: int = parameter["ini"]
         gen: int = parameter["gen"]
         obj = parameter["obj"]
@@ -39,4 +41,6 @@ if __name__ == "__main__":
         # optimize start
         logger.info("-- start optimization --")
         opt: SurrogateOptimizer = SurrogateOptimizer(method)
-        ans = opt.optimize(p, obj, dim, ini, gen)
+        ans = opt.optimize(
+            trial=trial, prob=p, obj=obj, dim=dim, initialNum=ini, generations=gen
+        )
