@@ -14,9 +14,8 @@ from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
-from .Search.Normal import NormalAlgorithm
-from .Search.Repeat import RepeatAlgorithm
 from .Search.SearchInterface import SearchInterface
+from .Search.SearchSelector import selectSeachAlgorithm
 
 logger = getLogger(__name__)
 
@@ -61,12 +60,5 @@ class SurrogateOptimizer:
         """
         Search new individual with acqusition function
         """
-        s: SearchInterface
-        if self.method == "EHVI":
-            s = NormalAlgorithm()
-        if self.method == "original":
-            s = RepeatAlgorithm()
-        else:
-            assert False, "早くインターフェスを作る！"
-
+        s: SearchInterface = selectSeachAlgorithm(self.method)
         return s.search(popX, popY)

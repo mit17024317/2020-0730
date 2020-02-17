@@ -17,6 +17,6 @@
 	# 対象問題(可能な問題一覧:Functions/FunctionSelecter)
 	problem: "ZDT4",
 
-	# 手法(EHVI，original)
-	method: "original"
+	# 手法(可能な手法一覧:Optimizer/Search/SearchSelector)
+	method: "Normal"
 }
