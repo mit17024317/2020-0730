@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-matplotlib = "*"
 numpy = "*"
 pydoe = "*"
 gpy = "*"
@@ -14,6 +13,7 @@ scikit-fuzzy = "*"
 pytest = "*"
 typing = "*"
 cson = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.8"

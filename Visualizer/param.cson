@@ -10,5 +10,8 @@
 			filename:"Result/20200214/01.csv",
 			itr: 0,
 		},
-	]
+	],
+	out: "sample",
+
+	extension: "png"
 }

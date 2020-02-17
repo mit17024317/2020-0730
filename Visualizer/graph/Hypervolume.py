@@ -4,10 +4,14 @@
 __author__ = "R.Nakata"
 __date__ = "2020/02/17"
 
+
+import logging
 from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+logging.getLogger("matplotlib.font_manager").disabled = True
 
 
 class HypervolumeVisualizer:
@@ -22,11 +26,10 @@ class HypervolumeVisualizer:
     def addToPlt(self, data: np.ndarray, name: str) -> None:
         x: List[int] = [x + self.frm for x in range(len(data))]
         plt.plot(x, data, label=name)
+        plt.legend()
 
-    def saveAndShow(self, filename):
-        self.show()
+    def save(self, filename):
         plt.savefig(f"Visualizer/out/{filename}")
 
     def show(self):
-        plt.legend()
         plt.show()

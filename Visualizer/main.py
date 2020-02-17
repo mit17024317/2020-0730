@@ -20,14 +20,6 @@ if __name__ == "__main__":
     formatter = "%(levelname)s: %(message)s"
     basicConfig(level=DEBUG, format=formatter)
 
-    # parameter check
-    if len(args) < 2:
-        logger.critical(
-            "Need Input Parameters! You should add filename to command line."
-        )
-        sys.exit(1)
-    filename: str = args[1]
-
     with open("Visualizer/param.cson", "r") as f:
         param = cson.load(f)
         hv: HypervolumeVisualizer = HypervolumeVisualizer(5)
@@ -37,4 +29,5 @@ if __name__ == "__main__":
             dataAll: np.ndarray = p.parse(d["filename"], 30)
             data: np.ndarray = dataAll[d["itr"]]
             hv.addToPlt(data, d["name"])
-        hv.saveAndShow("sample.png")
+        hv.save("{}.{}".format(param["out"], param["extension"]))
+        hv.show()
