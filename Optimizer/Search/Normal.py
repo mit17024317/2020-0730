@@ -13,6 +13,7 @@ from numpy.random import rand
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
 
+from ..Sampling.Random import RandomSampling
 from .Acquisition.AcquisitionInterface import AcquisitionMultiInterface
 from .Acquisition.EHVI import EHVI
 
@@ -57,7 +58,8 @@ class NormalAlgorithm:
         searchSize: int = 100
         newIndiv: np.ndarray
         ehvi_max: float = -1.0
-        for x in [np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)]:
+        r = RandomSampling()
+        for x in r.Sampling(searchSize, DIM):
             models: List[BayesianModelInterface] = [
                 GPR(np.array(popX), y) for y in np.transpose(popY)
             ]

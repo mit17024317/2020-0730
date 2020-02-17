@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Latin Hypercube Sampling Interface."""
+"""Random Sampling."""
 
 __author__ = "R.Nakata"
-__date__ = "2020/02/07"
+__date__ = "2020/02/17"
 
 from typing import List
 
 import numpy as np
-from pyDOE import lhs
+from numpy.random import rand
 
 
-class LatinHypercubeSampling:
+class RandomSampling:
     """
-    Latin Hypercube Sampling
+    Random Sampling
     """
 
     def Sampling(self, n: int, d: int) -> List[np.ndarray]:
@@ -31,6 +31,7 @@ class LatinHypercubeSampling:
         pop: List<np.ndarray<float>>
             initial poplation
         """
-        sample: np.ndarray = lhs(d, n)
-        pop: List[np.ndarray] = [np.array(s) for s in sample]
+        pop: List[np.ndarray] = [
+            np.array([rand() for _ in range(d)]) for __ in range(n)
+        ]
         return pop

@@ -13,6 +13,7 @@ from numpy.random import rand
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
 
+from ..Sampling.Random import RandomSampling
 from .Acquisition.EI import EI
 from .Normal import NormalAlgorithm
 from .SearchInterface import SearchInterface
@@ -65,9 +66,8 @@ class RepeatAlgorithm:
         newIndiv: np.ndarray
         ei_max: float = -1.0
         for _, model, basis in list(sortList)[:5]:
-            for x in [
-                np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)
-            ]:
+            r = RandomSampling()
+            for x in r.Sampling(searchSize, DIM):
                 m, v = model.getPredictDistribution(x)
                 ei = af.f(m, v, basis)
                 if ei > ei_max:
