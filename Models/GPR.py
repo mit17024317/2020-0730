@@ -78,6 +78,8 @@ class GPR:
         ml, vl = self.__model.predict(np.array([x]))
         m: float = ml[0][0]
         v: float = vl[0][0]
+        # 計算誤差による分散のマイナス値を補正
+        v = 0.0 if v < 0.0 else v
         return m, v
 
     class __DisableRunnningInfomation:
