@@ -1,0 +1,14 @@
+{
+	data: [
+		{
+			name: "EHVI",
+			filename:"Result/20200214/00.csv",
+			itr: 0,
+		},
+		{
+			name: "EHVI+EI",
+			filename:"Result/20200214/01.csv",
+			itr: 0,
+		},
+	]
+}

@@ -7,8 +7,10 @@ __date__ = "2020/02/17"
 import sys
 from logging import DEBUG, basicConfig, getLogger
 
+import cson
 import numpy as np
 
+from graph.Hypervolume import HypervolumeVisualizer
 from Parser import Parser
 
 logger = getLogger(__name__)
@@ -26,7 +28,13 @@ if __name__ == "__main__":
         sys.exit(1)
     filename: str = args[1]
 
-    # data parse
-    p = Parser()
-    data: np.ndarray = p.parse(filename, 30)
-    print(data)
+    with open("Visualizer/param.cson", "r") as f:
+        param = cson.load(f)
+        hv: HypervolumeVisualizer = HypervolumeVisualizer(5)
+        for d in param["data"]:
+            # data parse
+            p: Parser = Parser()
+            dataAll: np.ndarray = p.parse(d["filename"], 30)
+            data: np.ndarray = dataAll[d["itr"]]
+            hv.addToPlt(data, d["name"])
+        hv.saveAndShow("sample.png")
