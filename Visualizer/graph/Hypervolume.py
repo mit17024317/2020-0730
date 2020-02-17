@@ -16,7 +16,6 @@ class HypervolumeVisualizer:
         self.__setting()
 
     def __setting(self) -> None:
-        plt.legend()
         plt.xlabel("Number of evaluations")
         plt.ylabel("Hypervolume")
 
@@ -25,8 +24,9 @@ class HypervolumeVisualizer:
         plt.plot(x, data, label=name)
 
     def saveAndShow(self, filename):
-        plt.savefig(f"Visualizer/out/{filename}")
         self.show()
+        plt.savefig(f"Visualizer/out/{filename}")
 
     def show(self):
+        plt.legend()
         plt.show()
