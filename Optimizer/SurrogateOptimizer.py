@@ -8,7 +8,6 @@ from logging import DEBUG, basicConfig, getLogger
 from typing import List
 
 import numpy as np
-
 from Functions.FunctionInterface import FunctionInterface
 from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
@@ -23,10 +22,22 @@ logger = getLogger(__name__)
 class SurrogateOptimizer:
     """
     Surrogate Assisted Multiobjective Evolutionary Alogorithm
+
+    attributes
+    ----------
+    __method: str
+        Optimizer's method name
+
     """
 
     def __init__(self, method: str) -> None:
-        self.method = method
+        """
+        Parameters
+        ----------
+        method: str
+            Optimizer's method name
+        """
+        self.__method = method
 
     def optimize(
         self,
@@ -38,6 +49,31 @@ class SurrogateOptimizer:
         generations: int = 30,
         initializer: SamplingInterface = LatinHypercubeSampling(),
     ) -> List[np.ndarray]:
+        """
+        optimize main method
+
+        Parameters
+        ----------
+        trial: int
+            number of trial
+        prob: FunctionInterface
+            target problem
+        obj: int
+            number of objective
+        dim: int
+            number ob design variables
+        initialNum: int
+            Initial popolation size
+        generations: int
+            number of generations
+        initializer: SamplingInterface
+            method of Initial Sampling
+
+        Returns
+        -------
+        popY: List[np.ndarray]
+            final popolation
+        """
 
         # Initialize
         popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
@@ -59,6 +95,18 @@ class SurrogateOptimizer:
     def __search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
         """
         Search new individual with acqusition function
+
+        Parameters
+        ----------
+        popX: List[np.ndarray]
+            popolation(design variables)
+        popY: List[np.ndarray]
+            popolation(objective variables)
+
+        Returns
+        -------
+        newIndiv: np.ndarray
+            new individual
         """
-        s: SearchInterface = selectSeachAlgorithm(self.method)
+        s: SearchInterface = selectSeachAlgorithm(self.__method)
         return s.search(popX, popY)
