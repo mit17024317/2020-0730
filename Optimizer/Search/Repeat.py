@@ -8,14 +8,15 @@ __date__ = "2020/02/14"
 from typing import List, Tuple
 
 import numpy as np
-from numpy.random import rand
-
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
 
 from ..Sampling.Random import RandomSampling
 from .Acquisition.EI import EI
 from .Normal import NormalAlgorithm
+from .Scalarization.PBI import PBI
+from .Scalarization.ScalarizationInterface import ScalarizationInterface
+from .Scalarization.WeightVector import RandomWeight
 from .SearchInterface import SearchInterface
 
 
@@ -49,11 +50,12 @@ class RepeatAlgorithm:
         # 各重みベクトルごとに候補解でのEI値を求めてソート
         af = EI()
         obj: int = len(popY[0])
-        gn: int = 100
-        gs: List[List[float]] = [[rand() for _ in range(obj)] for __ in range(gn)]
+        ws: List[np.ndarray] = RandomWeight().generateWeightList(obj, 100)
+
         sortList: List[Tuple[float, BayesianModelInterface, float]] = []
-        for i, g in enumerate(gs):
-            Y = np.array([np.sum(np.array(g) * y) for y in popY])
+        pbi: ScalarizationInterface = PBI(3.0)
+        for i, g in enumerate(ws):
+            Y = np.array([pbi.f(y, g) for y in popY])
             model: BayesianModelInterface = GPR(np.array(popX), Y)
             m, v = model.getPredictDistribution(goodIndiv)
             basis = np.min(Y)
