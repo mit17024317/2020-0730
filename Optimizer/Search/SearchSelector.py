@@ -6,6 +6,7 @@ __date__ = "2020/02/17"
 
 
 from .Normal import NormalAlgorithm
+from .parEGO import parEGO
 from .Repeat import RepeatAlgorithm
 from .SearchInterface import SearchInterface
 
@@ -29,5 +30,7 @@ def selectSeachAlgorithm(name: str) -> SearchInterface:
         return NormalAlgorithm()
     if name == "Repeat":
         return RepeatAlgorithm()
+    if name == "parEGO":
+        return parEGO()
 
     assert False, f'Algotirhm "{name}" is not defined.'
