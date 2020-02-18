@@ -31,5 +31,5 @@ class WeightedSum:
         value: float
             scalar value
         """
-        value: float = np.sum(x * w)
+        value: float = np.dot(x, w)
         return value
