@@ -15,10 +15,10 @@
 	dim: 3,
 
 	# 対象問題(可能な問題一覧:Functions/FunctionSelecter)
-	problem: "ZDT4",
+	problem: "ZDT6",
 
-	# 手法(EHVI，original)
-	method: "EHVI"
+	# 手法(可能な手法一覧:Optimizer/Search/SearchSelector)
+	method: "Normal"
 
 	# 各探索メカニズムにおけるモデル上評価回数
 	mEval:1000

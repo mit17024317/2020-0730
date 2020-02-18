@@ -5,20 +5,16 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/07"
 
 from logging import DEBUG, basicConfig, getLogger
-from typing import List, Tuple
+from typing import List
 
 import numpy as np
-from numpy.random import rand
-
 from Functions.FunctionInterface import FunctionInterface
-from Models.GPR import GPR
-from Models.ModelInterface import BayesianModelInterface
 from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
-from .Acquisition.EHVI import EHVI
-from .Acquisition.EI import EI
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
+from .Search.SearchInterface import SearchInterface
+from .Search.SearchSelector import selectSeachAlgorithm
 
 logger = getLogger(__name__)
 
@@ -26,13 +22,25 @@ logger = getLogger(__name__)
 class SurrogateOptimizer:
     """
     Surrogate Assisted Multiobjective Evolutionary Alogorithm
+
+    attributes
+    ----------
+    __method: str
+        Optimizer's method name
+
     """
 
-    # TODO: Modelを受け取る
     def __init__(self, method: str, mEval: int = 1000) -> None:
-        self.method = method
+        """
+        Parameters
+        ----------
+        method: str
+            Optimizer's method name
+        mEval: int
+            evaluation num on surrogate model
+        """
+        self.__method = method
         self.__mEval = mEval
-        ...
 
     def optimize(
         self,
@@ -44,6 +52,26 @@ class SurrogateOptimizer:
         generations: int = 30,
         initializer: SamplingInterface = LatinHypercubeSampling(),
     ) -> None:
+        """
+        optimize main method
+
+        Parameters
+        ----------
+        trial: int
+            number of trial
+        prob: FunctionInterface
+            target problem
+        obj: int
+            number of objective
+        dim: int
+            number ob design variables
+        initialNum: int
+            Initial popolation size
+        generations: int
+            number of generations
+        initializer: SamplingInterface
+            method of Initial Sampling
+        """
         # TODO: 返り値について考える
 
         # n trial
@@ -65,83 +93,18 @@ class SurrogateOptimizer:
     def __search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
         """
         Search new individual with acqusition function
+
+        Parameters
+        ----------
+        popX: List[np.ndarray]
+            popolation(design variables)
+        popY: List[np.ndarray]
+            popolation(objective variables)
+
+        Returns
+        -------
+        newIndiv: np.ndarray
+            new individual
         """
-        # TODO: 後でクラスに切り出す
-        if self.method == "EHVI":
-            return self.___EHVI(popX, popY)
-        if self.method == "original":
-            return self.___original(popX, popY)
-        else:
-            assert False, "早くインターフェスを作る！"
-
-    def __generageModel(
-        self, popX: List[np.ndarray], popY: List[np.ndarray]
-    ) -> List[BayesianModelInterface]:
-
-        X = np.array(popX)
-        Y = np.transpose(popY)
-        models: List[BayesianModelInterface] = [GPR(X, y) for y in Y]
-        return models
-
-    # TODO:ここ以下をなんとかする
-    """
-    以下は全て実験用のゴミコードである
-    """
-
-    def ___EHVI(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
-        DIM: int = len(popX[0])
-        # TODO:Interfaceを使う
-        afm: EHVI = EHVI()
-        # TODO:CMA-ESの導入
-        searchSize: int = self.__mEval
-        newIndiv: np.ndarray
-        ehvi_max: float = -1.0
-        for x in [np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)]:
-            models: List[BayesianModelInterface] = self.__generageModel(popX, popY)
-            ms: List[float] = []
-            vs: List[float] = []
-            for model in models:
-                m, v = model.getPredictDistribution(x)
-                ms.append(m)
-                vs.append(v)
-            ehvi: float = afm.f(ms, vs, popY)
-            if ehvi > ehvi_max:
-                ehvi_max = ehvi
-                newIndiv = x
-        return newIndiv
-
-    def ___original(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
-        DIM: int = len(popX[0])
-
-        # 候補の導出
-        goodIndiv: np.ndarray = self.___EHVI(popX, popY)
-
-        # 各重みベクトルごとに候補解でのEI値を求めてソート
-        af = EI()
-        obj: int = len(popY[0])
-        gn: int = 100
-        gs: List[List[float]] = [[rand() for _ in range(obj)] for __ in range(gn)]
-        sortList: List[Tuple[float, BayesianModelInterface, float]] = []
-        for i, g in enumerate(gs):
-            Y = np.array([np.sum(np.array(g) * y) for y in popY])
-            model: BayesianModelInterface = GPR(np.array(popX), Y)
-            m, v = model.getPredictDistribution(goodIndiv)
-            basis = np.min(Y)
-            ei = af.f(m, v, basis)
-            sortList.append((ei, model, basis))
-        sortList = reversed(sorted(sortList, key=lambda x: x[0]))
-
-        # EI値による探索
-        searchSize: int = self.__mEval
-        newIndiv: np.ndarray
-        ei_max: float = -1.0
-        for _, model, basis in list(sortList)[:5]:
-            for x in [
-                np.array([rand() for _ in range(DIM)]) for __ in range(searchSize)
-            ]:
-                m, v = model.getPredictDistribution(x)
-                ei = af.f(m, v, basis)
-                if ei > ei_max:
-                    ei_max = ei
-                    newIndiv = x
-        return newIndiv
+        s: SearchInterface = selectSeachAlgorithm(self.__method)
+        return s.search(popX, popY)
