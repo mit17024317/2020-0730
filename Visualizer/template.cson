@@ -10,8 +10,13 @@
 			filename:"Result/20200214/01.csv",
 			itr: 0,
 		},
+		{
+			name: "parEGO",
+			filename:"Result/20200218/00.csv",
+			itr: 0,
+		},
 	],
-	out: "sample",
+	out: "ZDT6",
 
 	extension: "pdf"
 }
