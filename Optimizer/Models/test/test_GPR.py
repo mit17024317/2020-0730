@@ -36,3 +36,21 @@ class TestGPR:
             m, v = model.getPredictDistribution(t)
             assert np.abs(m - mv[0]) < 1e-5
             assert np.abs(v - mv[1]) < 1e-5
+
+    @pytest.mark.parametrize(
+        ("dim", "obj", "num"),
+        [(3, 2, 10), (5, 3, 10), (10, 10, 10), (5, 5, 20), (10, 10, 50)],
+    )
+    def test_getPredictValueAll_random(self, dim, obj, num):
+
+        x = np.array([[rand() for _ in range(dim)] for __ in range(num)])
+        y = np.array([rand() for _ in range(num)])
+
+        model = module.GPR.GPR(x, y)
+
+        p = np.array([[rand() for _ in range(dim)] for __ in range(num)])
+        vL = model.getPredictValueAll(p)
+
+        for t, v in zip(p, vL):
+            v2 = model.getPredictValue(t)
+            assert np.abs(v - v2) < 1e-5

@@ -60,6 +60,23 @@ class GPR:
         """
         return self.getPredictDistribution(x)[0]
 
+    def getPredictValueAll(self, xList: np.ndarray) -> np.ndarray:
+        """
+        calcrate objective value on all x
+
+        Parameters
+        ----------
+        xList: np.ndarray<np.ndarray<float>>
+            all design variables
+
+        Returns
+        -------
+        y: np.ndarray<float>
+            all predect of objective variables
+        """
+        DistributionALL: np.ndarray = self.getPredictDistributionAll(xList)
+        return DistributionALL[:, 0]
+
     def getPredictDistribution(self, x: np.ndarray) -> Tuple[float, float]:
         """
         calcrate distribution(mean, variance)
@@ -74,14 +91,10 @@ class GPR:
         (m,v): (float, float)
             mean and variance
         """
-        # NOTE:tupleで初期化する場合の変数アノテーションのやり方分からん
-        ml: List[List[float]]
-        vl: List[List[float]]
-        ml, vl = self.__model.predict(np.array([x]))
-        m: float = ml[0][0]
-        v: float = vl[0][0]
-        # 計算誤差による分散のマイナス値を補正
-        v = 0.0 if v < 0.0 else v
+        mvList: np.ndarray = self.getPredictDistributionAll(np.array([x]))
+        m: float
+        v: float
+        m, v = mvList[0]
         return m, v
 
     def getPredictDistributionAll(self, xList: np.ndarray) -> np.ndarray:
