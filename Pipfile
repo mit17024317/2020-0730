@@ -16,6 +16,7 @@ cson = "*"
 matplotlib = "*"
 optproblems = "*"
 diversipy = "*"
+colorlog = "*"
 
 [requires]
 python_version = "3.8"

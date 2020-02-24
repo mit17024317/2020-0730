@@ -1,19 +1,22 @@
 import sys
-from logging import DEBUG, basicConfig, getLogger
+from logging import DEBUG
 
+import colorlog
 import cson
 
 from Functions.FunctionInterface import FunctionInterface
 from Functions.FunctionSelector import selectFunction
 from Optimizer.SurrogateOptimizer import SurrogateOptimizer
 
-logger = getLogger(__name__)
+logger = colorlog.getLogger(__name__)
 
 args = sys.argv
 
 if __name__ == "__main__":
-    formatter = "%(levelname)s: %(message)s"
-    basicConfig(level=DEBUG, format=formatter)
+    formatter = (
+        "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
+    )
+    colorlog.basicConfig(level=DEBUG, format=formatter)
 
     # parameter check
     if len(args) < 2:

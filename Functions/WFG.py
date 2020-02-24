@@ -6,12 +6,12 @@ __date__ = "2020/02/24"
 
 
 import sys
-from logging import getLogger
 
+import colorlog
 import numpy as np
 from optproblems import Individual, wfg
 
-logger = getLogger(__name__)
+logger = colorlog.getLogger(__name__)
 
 refP: np.ndarray = np.array([3, 5, 7, 11, 13, 15, 17, 19])
 
