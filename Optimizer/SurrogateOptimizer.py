@@ -5,7 +5,7 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/07"
 
 from logging import DEBUG, basicConfig, getLogger
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 
@@ -14,6 +14,7 @@ from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
+from .Search.Acquisition.EHVI import EHVI
 from .Search.SearchInterface import SearchInterface
 from .Search.SearchSelector import selectSeachAlgorithm
 
@@ -45,7 +46,6 @@ class SurrogateOptimizer:
 
     def optimize(
         self,
-        trial: int,
         prob: FunctionInterface,
         obj: int,
         dim: int,
@@ -58,8 +58,6 @@ class SurrogateOptimizer:
 
         Parameters
         ----------
-        trial: int
-            number of trial
         prob: FunctionInterface
             target problem
         obj: int
@@ -75,23 +73,26 @@ class SurrogateOptimizer:
         """
         # TODO: 返り値について考える
 
-        # n trial
-        for __ in range(trial):
-            # Initialize
-            popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
-            popY: List[np.ndarray] = [np.array(prob.f(x, obj)) for x in popX]
+        # Initialize
+        popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
+        popY: List[np.ndarray] = [np.array(prob.f(x, obj)) for x in popX]
 
-            # generate and update
-            for _ in range(generations):
-                logger.info(f"{_}世代")
-                newIndiv: np.ndarray = self.__search(popX, popY)
-                popX.append(newIndiv)
-                popY.append(prob.f(newIndiv, obj))
-                ip = [1.0 for _ in range(2)]
-                hv: float = compute_pyhv(popY, ip)
-                print(hv)
+        # generate and update
+        for _ in range(generations):
+            logger.info(f"{_} generation")
 
-    def __search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
+            newIndiv: np.ndarray
+            af: float
+            newIndiv, af = self.__search(popX, popY)
+
+            popX.append(newIndiv)
+            popY.append(prob.f(newIndiv, obj))
+            hv: float = compute_pyhv(popY, [1.0 for _ in range(obj)])
+            print(hv, af)
+
+    def __search(
+        self, popX: List[np.ndarray], popY: List[np.ndarray]
+    ) -> Tuple[np.ndarray, float]:
         """
         Search new individual with acqusition function
 

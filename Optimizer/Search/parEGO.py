@@ -5,9 +5,10 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/18"
 
 
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
+
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
 
@@ -24,7 +25,9 @@ class parEGO:
     parEGO(pareto EGO).
     """
 
-    def search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
+    def search(
+        self, popX: List[np.ndarray], popY: List[np.ndarray]
+    ) -> Tuple[np.ndarray, float]:
         """
         seach algorithm.
 
@@ -58,4 +61,4 @@ class parEGO:
             if ei > ei_max:
                 ei_max = ei
                 newIndiv = x
-        return newIndiv
+        return newIndiv, ei_max

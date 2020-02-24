@@ -8,6 +8,7 @@ __date__ = "2020/02/14"
 from typing import List, Tuple
 
 import numpy as np
+
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
 
@@ -25,7 +26,9 @@ class RepeatAlgorithm:
     multi acquisition Search algorithm.
     """
 
-    def search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
+    def search(
+        self, popX: List[np.ndarray], popY: List[np.ndarray]
+    ) -> Tuple[np.ndarray, float]:
         """
         seach algorithm.
 
@@ -45,7 +48,7 @@ class RepeatAlgorithm:
 
         # 候補の導出
         multiAlg: SearchInterface = NormalAlgorithm()
-        goodIndiv: np.ndarray = multiAlg.search(popX, popY)
+        goodIndiv: np.ndarray = multiAlg.search(popX, popY)[0]
 
         # 各重みベクトルごとに候補解でのEI値を求めてソート
         af = EI()
@@ -75,4 +78,4 @@ class RepeatAlgorithm:
                 if ei > ei_max:
                     ei_max = ei
                     newIndiv = x
-        return newIndiv
+        return newIndiv, ei_max

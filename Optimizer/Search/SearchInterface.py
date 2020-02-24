@@ -5,7 +5,7 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/14"
 
 
-from typing import List, Protocol
+from typing import List, Protocol, Tuple
 
 import numpy as np
 
@@ -15,7 +15,9 @@ class SearchInterface(Protocol):
     Search algorithm interface.
     """
 
-    def search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
+    def search(
+        self, popX: List[np.ndarray], popY: List[np.ndarray]
+    ) -> Tuple[np.ndarray, float]:
         """
         seach algorithm.
 

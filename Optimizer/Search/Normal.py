@@ -5,7 +5,7 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/14"
 
 from logging import getLogger
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 from numpy.random import rand
@@ -39,7 +39,9 @@ class NormalAlgorithm:
         """
         self.__af: AcquisitionMultiInterface = af
 
-    def search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
+    def search(
+        self, popX: List[np.ndarray], popY: List[np.ndarray]
+    ) -> Tuple[np.ndarray, float]:
         """
         seach algorithm.
 
@@ -70,5 +72,7 @@ class NormalAlgorithm:
         ehviList: List[float] = [
             self.__af.f(means, varis, popY) for means, varis in np.transpose(mvl)
         ]
-        newIndiv: np.ndarray = max(zip(ehviList, searchPop), key=lambda x: x[0])[1]
-        return newIndiv
+        ehvi: float
+        newIndiv: np.ndarray
+        newIndiv, ehvi = max(zip(searchPop, ehviList), key=lambda x: x[1])
+        return newIndiv, ehvi
