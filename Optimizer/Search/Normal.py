@@ -12,6 +12,7 @@ from numpy.random import rand
 
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
+from Tools.stop_watch import stop_watch
 
 from ..Sampling.Random import RandomSampling
 from .Acquisition.AcquisitionInterface import AcquisitionMultiInterface
@@ -37,6 +38,7 @@ class NormalAlgorithm:
         """
         self.__af: AcquisitionMultiInterface = af
 
+    @stop_watch
     def search(self, popX: List[np.ndarray], popY: List[np.ndarray]) -> np.ndarray:
         """
         seach algorithm.
