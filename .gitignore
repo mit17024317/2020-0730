@@ -12,9 +12,9 @@
 *Result/*
 
 Parameters/*
-!sample.cson
+!template.cson
 
 debuger.py
 o
 
-Visualizer/param.cson
+Visualizer/template.cson

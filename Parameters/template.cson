@@ -1,6 +1,6 @@
 {
 	# 試行回数
-	trial: 15,
+	trial: 1,
 
 	# 初期解数
 	ini:5,
@@ -15,7 +15,7 @@
 	dim: 3,
 
 	# 対象問題(可能な問題一覧:Functions/FunctionSelecter)
-	problem: "ZDT6",
+	problem: "WFG1",
 
 	# 手法(可能な手法一覧:Optimizer/Search/SearchSelector)
 	method: "parEGO"

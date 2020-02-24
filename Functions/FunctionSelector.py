@@ -7,6 +7,7 @@ __date__ = "2020/02/04"
 
 from .BenchmarkFunctions import Rastrigin, Rosenbrock, Schwefel
 from .FunctionInterface import FunctionInterface
+from .WFG import WFG1, WFG2, WFG3, WFG4, WFG5, WFG6, WFG7, WFG8, WFG9
 from .ZDT import ZDT4, ZDT6
 
 
@@ -35,5 +36,23 @@ def selectFunction(name: str) -> FunctionInterface:
         return ZDT4()
     if name == "ZDT6":
         return ZDT6()
+    if name == "WFG1":
+        return WFG1()
+    if name == "WFG2":
+        return WFG2()
+    if name == "WFG3":
+        return WFG3()
+    if name == "WFG4":
+        return WFG4()
+    if name == "WFG5":
+        return WFG5()
+    if name == "WFG6":
+        return WFG6()
+    if name == "WFG7":
+        return WFG7()
+    if name == "WFG8":
+        return WFG8()
+    if name == "WFG9":
+        return WFG9()
 
     assert False, f'Function "{name}" is not defined.'
