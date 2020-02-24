@@ -13,5 +13,5 @@
 	],
 	out: "sample",
 
-	extension: "png"
+	extension: "pdf"
 }
