@@ -17,7 +17,7 @@ def evaluateWFG(WFG: wfg.WFG, x: np.ndarray) -> np.ndarray:
 
 
 class WFG1:
-    def f(self, x: np.ndarray) -> np.ndarray:
-        prob: wfg.WFG1 = wfg.WFG1(2, len(x), 4)
+    def f(self, x: np.ndarray, obj: int) -> np.ndarray:
+        prob: wfg.WFG1 = wfg.WFG1(obj, len(x), 4)
         val: np.ndarray = evaluateWFG(prob, x)
         return val

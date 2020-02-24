@@ -9,7 +9,7 @@ import numpy as np
 
 
 class ZDT4:
-    def f(self, x: np.ndarray) -> np.ndarray:
+    def f(self, x: np.ndarray, obj: int = 2) -> np.ndarray:
         N: int = len(x)
         f1: float = x[0]
         g: float = 1 + 10 * (N - 1) + np.sum(
@@ -21,7 +21,7 @@ class ZDT4:
 
 
 class ZDT6:
-    def f(self, x: np.ndarray) -> np.ndarray:
+    def f(self, x: np.ndarray, obj: int = 2) -> np.ndarray:
         N: int = len(x)
         f1: float = 1 - np.exp(-4 * x[0]) * np.power(np.sin(6 * np.pi * x[0]), 6)
         g: float = 1 + 9 * np.power(np.sum(x[1:]) / (N - 1), 1 / 4)

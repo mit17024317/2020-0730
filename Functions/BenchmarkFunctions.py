@@ -9,7 +9,7 @@ import numpy as np
 
 
 class Rosenbrock:
-    def f(self, x: np.ndarray) -> np.ndarray:
+    def f(self, x: np.ndarray, obj: int = 1) -> np.ndarray:
         sum = 0
         for i in range(len(x) - 1):
             sum += (
@@ -20,7 +20,7 @@ class Rosenbrock:
 
 
 class Rastrigin:
-    def f(self, x: np.ndarray) -> np.ndarray:
+    def f(self, x: np.ndarray, obj: int = 1) -> np.ndarray:
         n = len(x)
         sum = 10 * n
         for t in x:
@@ -30,7 +30,7 @@ class Rastrigin:
 
 
 class Schwefel:
-    def f(self, x: np.ndarray) -> np.ndarray:
+    def f(self, x: np.ndarray, obj: int = 1) -> np.ndarray:
         sum = 0
         for t in x:
             t = 1000 * t - 500

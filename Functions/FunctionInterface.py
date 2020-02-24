@@ -9,5 +9,5 @@ import numpy as np
 
 
 class FunctionInterface(Protocol):
-    def f(self, x: np.ndarray) -> np.ndarray:
+    def f(self, x: np.ndarray, obj: int) -> np.ndarray:
         ...

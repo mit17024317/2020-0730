@@ -8,6 +8,7 @@ from logging import DEBUG, basicConfig, getLogger
 from typing import List
 
 import numpy as np
+
 from Functions.FunctionInterface import FunctionInterface
 from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
@@ -78,14 +79,14 @@ class SurrogateOptimizer:
         for __ in range(trial):
             # Initialize
             popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
-            popY: List[np.ndarray] = [np.array(prob.f(x)) for x in popX]
+            popY: List[np.ndarray] = [np.array(prob.f(x, obj)) for x in popX]
 
             # generate and update
             for _ in range(generations):
                 logger.info(f"{_}世代")
                 newIndiv: np.ndarray = self.__search(popX, popY)
                 popX.append(newIndiv)
-                popY.append(prob.f(newIndiv))
+                popY.append(prob.f(newIndiv, obj))
                 ip = [1.0 for _ in range(2)]
                 hv: float = compute_pyhv(popY, ip)
                 print(hv)
