@@ -18,9 +18,9 @@ class ModelInterface(Protocol):
         """
         Parameters
         ----------
-        samplX: np.ndarray<m, d>
+        samplX: np.ndarray<np.ndarray<float>>
             design variables of sample points
-        samplY: np.ndarray<m>
+        samplY: np.ndarray<float>
             objective variables of sample points
         """
         ...
@@ -31,13 +31,29 @@ class ModelInterface(Protocol):
 
         Parameters
         ----------
-        x: np.ndarray<d>
+        x: np.ndarray<float>
             design variables
 
         Returns
         -------
         y: float
             predect of objective variables
+        """
+        ...
+
+    def getPredictValueAll(self, xList: np.ndarray) -> np.ndarray:
+        """
+        calcrate objective value on all x
+
+        Parameters
+        ----------
+        xList: np.ndarray<np.ndarray<float>>
+            all design variables
+
+        Returns
+        -------
+        y: np.ndarray<float>
+            all predect of objective variables
         """
         ...
 
@@ -53,12 +69,28 @@ class BayesianModelInterface(ModelInterface, Protocol):
 
         Parameters
         ----------
-        x: np.ndarray<d>
+        x: np.ndarray<float>
             design variables
 
         Returns
         -------
         (m,v): (float, float)
             mean and variance
+        """
+        ...
+
+    def getPredictDistributionAll(self, xList: np.ndarray) -> np.ndarray:
+        """
+        calcrate distribution(mean, variance) on all x
+
+        Parameters
+        ----------
+        xList: np.ndarray<np.ndarray<float>>
+            all design variables
+
+        Returns
+        -------
+        y: np.ndarray<Tuple<float,float>>
+            all mean and variance
         """
         ...

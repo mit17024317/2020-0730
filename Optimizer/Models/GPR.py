@@ -11,6 +11,8 @@ from typing import List, Tuple
 import GPy
 import numpy as np
 
+logger = logging.getLogger(__name__)
+
 
 class GPR:
     """
@@ -27,9 +29,9 @@ class GPR:
         """
         Parameters
         ----------
-        samplX: np.ndarray<m, d>
+        samplX: np.ndarray<np.ndarray<float>>
             design variables of sample points
-        samplY: np.ndarray<m>
+        samplY: np.ndarray<float>
             objective variables of sample points
         """
         # disable logger output and warnings
@@ -48,7 +50,7 @@ class GPR:
 
         Parameters
         ----------
-        x: np.ndarray<d>
+        x: np.ndarray<float>
             design variables
 
         Returns
@@ -64,7 +66,7 @@ class GPR:
 
         Parameters
         ----------
-        x: np.ndarray<d>
+        x: np.ndarray<float>
             design variables
 
         Returns
@@ -81,6 +83,28 @@ class GPR:
         # 計算誤差による分散のマイナス値を補正
         v = 0.0 if v < 0.0 else v
         return m, v
+
+    def getPredictDistributionAll(self, xList: np.ndarray) -> np.ndarray:
+        """
+        calcrate distribution(mean, variance) on all x
+
+        Parameters
+        ----------
+        xList: np.ndarray<np.ndarray<float>>
+            all design variables
+
+        Returns
+        -------
+        y: np.ndarray<Tuple<float,float>>
+            all mean and variance
+        """
+        mvListTrans: Tuple[np.ndarray, np.ndarray] = self.__model.predict(xList)
+        mvList: np.ndarray = np.transpose(mvListTrans)[0]
+        # 計算誤差による分散のマイナス値を補正
+        for mv in mvList:
+            mv[1] = 0.0 if mv[1] < 0.0 else mv[1]
+
+        return mvList
 
     class __DisableRunnningInfomation:
         """
