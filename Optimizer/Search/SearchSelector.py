@@ -9,6 +9,7 @@ from .Normal import NormalAlgorithm
 from .parEGO import parEGO
 from .Repeat import RepeatAlgorithm
 from .SearchInterface import SearchInterface
+from .Switch import Switch
 
 
 def selectSeachAlgorithm(name: str) -> SearchInterface:
@@ -32,5 +33,7 @@ def selectSeachAlgorithm(name: str) -> SearchInterface:
         return RepeatAlgorithm()
     if name == "parEGO":
         return parEGO()
+    if name == "Switch":
+        return Switch()
 
     assert False, f'Algotirhm "{name}" is not defined.'
