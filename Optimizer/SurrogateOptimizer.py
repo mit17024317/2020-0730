@@ -41,8 +41,8 @@ class SurrogateOptimizer:
         mEval: int
             evaluation num on surrogate model
         """
-        self.__method = method
-        self.__mEval = mEval
+        self.__method: SearchInterface = selectSeachAlgorithm(method)
+        self.__mEval: int = mEval
 
     def optimize(
         self,
@@ -83,30 +83,12 @@ class SurrogateOptimizer:
 
             newIndiv: np.ndarray
             af: float
-            newIndiv, af = self.__search(popX, popY)
+            newIndiv, af = self.__method.search(popX, popY)
 
             popX.append(newIndiv)
             popY.append(prob.f(newIndiv, obj))
             hv: float = compute_pyhv(popY, [1.0 for _ in range(obj)])
-            print(hv, af)
-
-    def __search(
-        self, popX: List[np.ndarray], popY: List[np.ndarray]
-    ) -> Tuple[np.ndarray, float]:
-        """
-        Search new individual with acqusition function
-
-        Parameters
-        ----------
-        popX: List[np.ndarray]
-            popolation(design variables)
-        popY: List[np.ndarray]
-            popolation(objective variables)
-
-        Returns
-        -------
-        newIndiv: np.ndarray
-            new individual
-        """
-        s: SearchInterface = selectSeachAlgorithm(self.__method)
-        return s.search(popX, popY)
+            print(hv, af, end=" ")
+            if hasattr(self.__method, "output"):
+                self.__method.output()
+            print()

@@ -4,12 +4,15 @@
 __author__ = "R.Nakata"
 __date__ = "2020/02/17"
 
+from logging import getLogger
 
 from .Normal import NormalAlgorithm
 from .parEGO import parEGO
 from .Repeat import RepeatAlgorithm
 from .SearchInterface import SearchInterface
-from .Switch import Switch
+from .Switch import SwitchAlgorithm
+
+logger = getLogger(__name__)
 
 
 def selectSeachAlgorithm(name: str) -> SearchInterface:
@@ -34,6 +37,7 @@ def selectSeachAlgorithm(name: str) -> SearchInterface:
     if name == "parEGO":
         return parEGO()
     if name == "Switch":
-        return Switch()
+        return SwitchAlgorithm()
 
-    assert False, f'Algotirhm "{name}" is not defined.'
+    logger.critical(f'Algotirhm "{name}" is not defined.')
+    assert False
