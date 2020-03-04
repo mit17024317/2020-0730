@@ -13,7 +13,7 @@ class Parser:
     def __read(self, filename) -> np.ndarray:
         with open(filename, "r") as f:
             reader = csv.reader(f)
-            return np.array([row for row in reader])
+            return np.array([row[:-1] for row in reader])
 
     def __toAverage(self, rawData, gen) -> np.ndarray:
         floatData: np.ndarray = np.frompyfunc(float, 1, 1)(rawData)
@@ -27,6 +27,7 @@ class Parser:
 
     def parse(self, filename, gen) -> np.ndarray:
         rawData: np.ndarray = self.__read(filename)
+        print(rawData)
         processedData: np.ndarray = self.__toAverage(rawData, gen)
         tData = processedData.T
         return tData

@@ -22,11 +22,11 @@ if __name__ == "__main__":
 
     with open("Visualizer/param.cson", "r") as f:
         param = cson.load(f)
-        hv: HypervolumeVisualizer = HypervolumeVisualizer(5)
+        hv: HypervolumeVisualizer = HypervolumeVisualizer(param["initialPop"])
         for d in param["data"]:
             # data parse
             p: Parser = Parser()
-            dataAll: np.ndarray = p.parse(d["filename"], 30)
+            dataAll: np.ndarray = p.parse(d["filename"], param["gen"])
             data: np.ndarray = dataAll[d["itr"]]
             hv.addToPlt(data, d["name"])
         hv.save("{}.{}".format(param["out"], param["extension"]))

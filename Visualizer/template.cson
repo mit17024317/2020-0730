@@ -1,4 +1,7 @@
 {
+	gen: 5,
+	initialPop: 5,
+
 	data: [
 		{
 			name: "EHVI",
