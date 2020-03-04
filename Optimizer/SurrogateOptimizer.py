@@ -14,7 +14,6 @@ from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
-from .Search.Acquisition.EHVI import EHVI
 from .Search.SearchInterface import SearchInterface
 from .Search.SearchSelector import selectSeachAlgorithm
 
@@ -81,14 +80,18 @@ class SurrogateOptimizer:
         for _ in range(generations):
             logger.info(f"{_} generation")
 
+            # search new individual
             newIndiv: np.ndarray
             af: float
             newIndiv, af = self.__method.search(popX, popY)
 
+            # evaluate and add new individual
             popX.append(newIndiv)
             popY.append(prob.f(newIndiv, obj))
             hv: float = compute_pyhv(popY, [1.0 for _ in range(obj)])
-            print(hv, af, end=" ")
+
+            # output
+            print(hv, af, sep=",", end=",")
             if hasattr(self.__method, "output"):
                 self.__method.output()
             print()

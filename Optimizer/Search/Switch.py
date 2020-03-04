@@ -34,7 +34,7 @@ class SwitchAlgorithm:
         self.__nowKey: bool = True
 
     def output(self) -> None:
-        print(1 if self.__nowKey else 0, end=" ")
+        print(1 if self.__nowKey else 0, end=",")
 
     def __select(self, popY) -> SearchInterface:
         """
