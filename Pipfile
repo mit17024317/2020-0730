@@ -17,6 +17,7 @@ matplotlib = "*"
 optproblems = "*"
 diversipy = "*"
 colorlog = "*"
+mypythontools = {git = "https://github.com/mdonaka/MyPythonTools.git"}
 
 [requires]
 python_version = "3.8"
