@@ -8,9 +8,10 @@ __date__ = "2020/02/18"
 from typing import List, Protocol
 
 import numpy as np
+from mypythontools.Design import Singleton
 
 
-class Tchebycheff:
+class Tchebycheff(Singleton):
     """
     Tchbychef function.
     """

@@ -8,6 +8,7 @@ __date__ = "2020/02/18"
 from typing import List, Protocol
 
 import numpy as np
+from mypythontools.Design import Singleton
 from numpy.random import rand
 
 
@@ -30,7 +31,7 @@ class WeightInterface(Protocol):
         ...
 
 
-class RandomWeight:
+class RandomWeight(Singleton):
     """
     Random Weight Vector
     """
@@ -56,7 +57,7 @@ class RandomWeight:
         return weightVectorList
 
 
-class UniformalWeight:
+class UniformalWeight(Singleton):
     """
     Uniformal Weight Vector
     """
