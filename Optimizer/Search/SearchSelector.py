@@ -6,7 +6,7 @@ __date__ = "2020/02/17"
 
 from logging import getLogger
 
-from .Normal import NormalAlgorithm
+from .EHVISearch import EHVISearch
 from .parEGO import parEGO
 from .Repeat import RepeatAlgorithm
 from .SearchInterface import SearchInterface
@@ -30,8 +30,8 @@ def selectSeachAlgorithm(name: str) -> SearchInterface:
         Search alogorithm classcorresponding to the name
     """
 
-    if name == "Normal":
-        return NormalAlgorithm()
+    if name == "EHVI":
+        return EHVISearch()
     if name == "Repeat":
         return RepeatAlgorithm()
     if name == "parEGO":

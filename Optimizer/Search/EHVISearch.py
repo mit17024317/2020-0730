@@ -1,25 +1,22 @@
 #!/usr/bin/env python3
-"""parEGO(pareto EGO)."""
+"""Search algorithm based on EHVI."""
 
 __author__ = "R.Nakata"
-__date__ = "2020/02/18"
-
+__date__ = "2020/04/07"
 
 from typing import List, Tuple
 
 import numpy as np
 from mypythontools.Design import Singleton
 
-from .Acquisition.EI import EI
-from .AcquisitionSearch import AcquisitionSearchSingle
-from .Scalarization.Tchebycheff import Tchebycheff
-from .Scalarization.WeightVector import RandomWeight
+from .Acquisition.EHVI import EHVI
+from .AcquisitionSearch import AcquisitionSearchMulti
 from .SearchInterface import SearchInterface
 
 
-class parEGO(Singleton):
+class EHVISearch(Singleton):
     """
-    parEGO(pareto EGO).
+    Search algorithm based on Acquisition function.
     """
 
     def search(
@@ -40,10 +37,5 @@ class parEGO(Singleton):
         newIndiv: np.ndarray
             most good solution's variables
         """
-        OBJ: int = len(popY[0])
-        ws: np.ndarray = RandomWeight().generateWeightList(OBJ, 1)[0]
-
-        searchAlgorithm: SearchInterface = AcquisitionSearchSingle(
-            EI(), Tchebycheff(), ws
-        )
+        searchAlgorithm: SearchInterface = AcquisitionSearchMulti(EHVI())
         return searchAlgorithm.search(popX, popY)

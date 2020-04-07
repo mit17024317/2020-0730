@@ -12,7 +12,7 @@ import numpy as np
 
 from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
-from .Normal import NormalAlgorithm
+from .EHVISearch import EHVISearch
 from .Repeat import RepeatAlgorithm
 from .SearchInterface import SearchInterface
 
@@ -64,7 +64,7 @@ class SwitchAlgorithm:
             if dif < 1e-5:
                 self.__nowKey = not self.__nowKey
                 self.__befAF = 0.0
-        return RepeatAlgorithm() if self.__nowKey else NormalAlgorithm()
+        return RepeatAlgorithm() if self.__nowKey else EHVISearch()
 
         ...
 

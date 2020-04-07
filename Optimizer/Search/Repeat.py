@@ -8,20 +8,21 @@ __date__ = "2020/02/14"
 from typing import List, Tuple
 
 import numpy as np
+from mypythontools.Design import Singleton
 
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
 
 from ..Sampling.Random import RandomSampling
 from .Acquisition.EI import EI
-from .Normal import NormalAlgorithm
+from .EHVISearch import EHVISearch
 from .Scalarization.PBI import PBI
 from .Scalarization.ScalarizationInterface import ScalarizationInterface
 from .Scalarization.WeightVector import RandomWeight
 from .SearchInterface import SearchInterface
 
 
-class RepeatAlgorithm:
+class RepeatAlgorithm(Singleton):
     """
     multi acquisition Search algorithm.
     """
@@ -47,7 +48,7 @@ class RepeatAlgorithm:
         DIM: int = len(popX[0])
 
         # 候補の導出
-        multiAlg: SearchInterface = NormalAlgorithm()
+        multiAlg: SearchInterface = EHVISearch()
         goodIndiv: np.ndarray = multiAlg.search(popX, popY)[0]
 
         # 各重みベクトルごとに候補解でのEI値を求めてソート

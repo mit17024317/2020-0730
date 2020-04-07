@@ -149,5 +149,4 @@ class AcquisitionSearchSingle:
             if afVal > afVal_max:
                 afVal_max = afVal
                 newIndiv = x
-
         return newIndiv, afVal_max
