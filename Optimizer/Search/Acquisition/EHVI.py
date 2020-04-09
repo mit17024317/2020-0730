@@ -8,10 +8,11 @@ __date__ = "2020/02/12"
 from typing import List
 
 import numpy as np
+from mypythontools.Design import Singleton
 from numpy.random import normal
 
 
-class EHVI:
+class EHVI(Singleton):
     """
     Approximation of Expected Hypervolume Improvement.
     """
