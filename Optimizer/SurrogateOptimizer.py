@@ -75,6 +75,10 @@ class SurrogateOptimizer:
         # Initialize
         popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
         popY: List[np.ndarray] = [np.array(prob.f(x, obj)) for x in popX]
+        for x in popX:
+            for t in x:
+                print(t, end=",")
+            print()
 
         # generate and update
         for _ in range(generations):
@@ -91,5 +95,8 @@ class SurrogateOptimizer:
             hv: float = compute_pyhv(popY, [1.0 for _ in range(obj)])
 
             # output
+            print()
+            for t in newIndiv:
+                print(t, end=",")
             print()
             print(hv, af, sep=",", end="\n")
