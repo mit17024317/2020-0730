@@ -33,7 +33,7 @@ class SwitchAlgorithm:
         self.__befAF: float = 0.0
         self.__nowKey: bool = True
 
-    def output(self) -> None:
+    def __output(self) -> None:
         print(1 if self.__nowKey else 0, end=",")
 
     def __select(self, popY) -> SearchInterface:
@@ -89,4 +89,5 @@ class SwitchAlgorithm:
         alg: SearchInterface = self.__select(popY)
         newIndiv, af = alg.search(popX, popY)
         self.__befAF = af
+        self.__output()
         return newIndiv, af

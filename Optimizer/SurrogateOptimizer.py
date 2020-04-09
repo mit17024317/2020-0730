@@ -91,7 +91,5 @@ class SurrogateOptimizer:
             hv: float = compute_pyhv(popY, [1.0 for _ in range(obj)])
 
             # output
-            print(hv, af, sep=",", end=",")
-            if hasattr(self.__method, "output"):
-                self.__method.output()
             print()
+            print(hv, af, sep=",", end="\n")
