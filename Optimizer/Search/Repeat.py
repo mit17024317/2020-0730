@@ -15,6 +15,7 @@ from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
 
 from ..Sampling.Random import RandomSampling
+from .Acquisition.EHVI import EHVI
 from .Acquisition.EI import EI
 from .EHVISearch import EHVISearch
 from .Scalarization.PBI import PBI
@@ -73,7 +74,7 @@ class RepeatAlgorithm(Singleton):
         basis: float,
         DIM: int,
         searchSize: int = 100,
-    ) -> Tuple[BayesianModelInterface, float]:
+    ) -> Tuple[np.ndarray, float]:
         """
         EfficientGlobalOptimization(EGO) using defined model
 
@@ -97,6 +98,44 @@ class RepeatAlgorithm(Singleton):
                 ei_max = ei
                 newIndiv = x
         return newIndiv, ei_max
+
+    def EItoEHVI(
+        self,
+        popX: List[np.ndarray],
+        popY: List[np.ndarray],
+        indivCandidateListEI: List[Tuple[np.ndarray, float, int]],
+    ):
+        """
+        change EI to EHVI each variables.
+
+        Parameters
+        ----------
+        popX: List[np.ndarray]
+            poplation variables list
+        popY: List[np.ndarray]
+            poplation evaluations list
+        indivCandidateListEI: List[Tuple[np.ndarray, float, int]]
+            before indiv list
+
+        Returns
+        -------
+        indivCandidateListEHVI: List[Tuple[np.ndarray, float, int]]
+            after indiv list
+        """
+        # モデル生成
+        models: List[BayesianModelInterface] = [
+            GPR(np.array(popX), y) for y in np.transpose(popY)
+        ]
+        # 各解でEHVI値を計算
+        indivCandidateListEHVI: List[Tuple[np.ndarray, float, int]] = []
+        for indiv, _, it in indivCandidateListEI:
+            mvl: List[Tuple[float, float]] = [
+                model.getPredictDistribution(indiv) for model in models
+            ]
+            ms, vs = np.transpose(mvl)
+            ehvi: float = EHVI().f(ms, vs, popY)
+            indivCandidateListEHVI.append((indiv, ehvi, it))
+        return indivCandidateListEHVI
 
     def search(
         self, popX: List[np.ndarray], popY: List[np.ndarray]
@@ -125,12 +164,17 @@ class RepeatAlgorithm(Singleton):
             Tuple[float, BayesianModelInterface, float, int]
         ] = self.calculateGoodWeightList(popX, popY, goodIndiv)
 
-        # 各優良な重みベクトルでEGO，最も高いEI値を持つ解が候補解
-        indivCandidateList: List[Tuple[BayesianModelInterface, float, int]] = [
+        # 各優良な重みベクトルでEGO
+        indivCandidateListEI: List[Tuple[np.ndarray, float, int]] = [
             self.EfficientGlobalOptimization(model, basis, len(popX[0])) + (i,)
             for _, model, basis, i in sortedWeightedList
         ]
-        newIndiv, afVal, it = max(indivCandidateList, key=lambda x: x[1])
+
+        # 各解でEHVI値を計算し，最も高いEHVI値を持つ解を候補解とする
+        indivCandidateListEHVI: List[Tuple[np.ndarray, float, int]] = self.EItoEHVI(
+            popX, popY, indivCandidateListEI
+        )
+        newIndiv, afVal, it = max(indivCandidateListEHVI, key=lambda x: x[1])
 
         self.__output(len(popY[0]), it)
         return newIndiv, afVal
