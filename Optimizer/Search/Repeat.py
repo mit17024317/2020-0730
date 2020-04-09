@@ -32,7 +32,7 @@ class RepeatAlgorithm(Singleton):
 
     def calculateGoodWeightList(
         self, popX: List[np.ndarray], popY: List[np.ndarray], goodIndiv: np.ndarray
-    ) -> List[Tuple[float, BayesianModelInterface, float]]:
+    ) -> List[Tuple[float, BayesianModelInterface, float, int]]:
         """
         calculate Good Weight List based on good indiv
 
@@ -47,14 +47,14 @@ class RepeatAlgorithm(Singleton):
 
         Returns
         -------
-        sortedWeightedList: List[Tuple[float, BayesianModelInterface, float]]
+        sortedWeightedList: List[Tuple[float, BayesianModelInterface, float, int]]
             weight vector list sorted by EI value
         """
         # 各重みベクトルごとに候補解でのEI値を求めてソート
         obj: int = len(popY[0])
-        ws: List[np.ndarray] = UniformalWeight().generateWeightList(obj, 20 * obj)
+        ws: List[np.ndarray] = UniformalWeight().generateWeightList(obj, 10 * obj)
 
-        sortList: List[Tuple[float, BayesianModelInterface, float]] = []
+        sortList: List[Tuple[float, BayesianModelInterface, float, int]] = []
         pbi: ScalarizationInterface = PBI(3.0)
         for i, g in enumerate(ws):
             Y = np.array([pbi.f(y, g) for y in popY])
@@ -62,7 +62,7 @@ class RepeatAlgorithm(Singleton):
             m, v = model.getPredictDistribution(goodIndiv)
             basis = np.min(Y)
             ei = EI().f(m, v, basis)
-            sortList.append((ei, model, basis))
+            sortList.append((ei, model, basis, i))
 
         sortedWeightedList = list(reversed(sorted(sortList, key=lambda x: x[0])))[:5]
         return sortedWeightedList
@@ -122,13 +122,21 @@ class RepeatAlgorithm(Singleton):
 
         # 優良な重みベクトルの選定
         sortedWeightedList: List[
-            Tuple[float, BayesianModelInterface, float]
+            Tuple[float, BayesianModelInterface, float, int]
         ] = self.calculateGoodWeightList(popX, popY, goodIndiv)
 
         # 各優良な重みベクトルでEGO，最も高いEI値を持つ解が候補解
-        indivCandidateList: List[Tuple[BayesianModelInterface, float]] = [
-            self.EfficientGlobalOptimization(model, basis, len(popX[0]))
-            for _, model, basis in sortedWeightedList
+        indivCandidateList: List[Tuple[BayesianModelInterface, float, int]] = [
+            self.EfficientGlobalOptimization(model, basis, len(popX[0])) + (i,)
+            for _, model, basis, i in sortedWeightedList
         ]
-        newIndiv, afVal = max(indivCandidateList, key=lambda x: x[1])
+        newIndiv, afVal, it = max(indivCandidateList, key=lambda x: x[1])
+
+        self.__output(len(popY[0]), it)
         return newIndiv, afVal
+
+    def __output(self, obj: int, it: int) -> None:
+        ws: List[np.ndarray] = UniformalWeight().generateWeightList(obj, 10 * obj)
+        for x in ws[it]:
+            print(x, end=",")
+        logger.info(ws[it])
