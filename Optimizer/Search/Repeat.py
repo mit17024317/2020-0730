@@ -5,6 +5,7 @@ __author__ = "R.Nakata"
 __date__ = "2020/02/14"
 
 
+from collections import deque
 from logging import getLogger
 from typing import List, Tuple
 
@@ -24,6 +25,33 @@ from .Scalarization.WeightVector import UniformalWeight
 from .SearchInterface import SearchInterface
 
 logger = getLogger()
+
+
+class Taboo:
+    # XXX:グローバル変数
+    def __init__(self) -> None:
+        self.__taboo: deque = deque([])
+
+    def __updete(self):
+        while len(self.__taboo) > 18:
+            self.__taboo.popleft()
+
+    def add(self, i: int) -> None:
+        for it in range(2, 0, -1):
+            self.__taboo.append(i - it)
+            self.__taboo.append(i + it)
+        self.__taboo.append(i)
+
+    def out(self, i: int) -> bool:
+        self.__updete()
+        return i in self.__taboo
+
+    def debug(self):
+        logger.critical(self.__taboo)
+
+
+# XXX: グローバル
+taboo: Taboo = Taboo()
 
 
 class RepeatAlgorithm(Singleton):
@@ -58,6 +86,8 @@ class RepeatAlgorithm(Singleton):
         sortList: List[Tuple[float, BayesianModelInterface, float, int]] = []
         pbi: ScalarizationInterface = PBI(3.0)
         for i, g in enumerate(ws):
+            if taboo.out(i):
+                continue
             Y = np.array([pbi.f(y, g) for y in popY])
             model: BayesianModelInterface = GPR(np.array(popX), Y)
             m, v = model.getPredictDistribution(goodIndiv)
@@ -175,6 +205,7 @@ class RepeatAlgorithm(Singleton):
             popX, popY, indivCandidateListEI
         )
         newIndiv, afVal, it = max(indivCandidateListEHVI, key=lambda x: x[1])
+        taboo.add(it)
 
         self.__output(len(popY[0]), it)
         return newIndiv, afVal
