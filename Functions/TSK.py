@@ -5,8 +5,13 @@ __author__ = "R.Nakata"
 __date__ = "2020/04/10"
 
 
+import subprocess
+from logging import getLogger
+
 import numpy as np
 from mypythontools.Design import Singleton
+
+logger = getLogger()
 
 input_low_upper = [
     [0, 0.5],
@@ -43,10 +48,21 @@ class TSK03(Singleton):
             ]
             return np.array(y)
 
+    def __exe(self, name="~/work/opt/pipe03/wb2019R3CentOS_Nakata.sh") -> None:
+        subprocess.run(name)
+
     def f(self, x: np.ndarray, obj: int = 2) -> np.ndarray:
         # input
-        self.__writeDesign(x, "TSK_files/test")
+        self.__writeDesign(x)
         # run
+        self.__exe()
         # output
-        val: np.ndarray = self.__readObj("TSK_files/output_2019R3.txt")
+        val: np.ndarray = self.__readObj()
         return val
+
+
+if __name__ == "__main__":
+    x = np.array([0.3 for _ in range(6)])
+    p = TSK03()
+    val = p.f(x)
+    logger.info(val)
