@@ -8,18 +8,45 @@ __date__ = "2020/04/10"
 import numpy as np
 from mypythontools.Design import Singleton
 
+input_low_upper = [
+    [0, 0.5],
+    [0.02, 0.133],
+    [-0.665, 0.665],
+    [-0.655, 0.655],
+    [-0.655, 0.655],
+    [-90, 90],
+]
+# NOTE 圧力最悪値を1000から3000に更新している
+output_low_upper = [[0, 200], [50, 3000]]
+
 
 class TSK03(Singleton):
     def __writeDesign(self, x: np.ndarray, name="~/work/opt/pipe03/input_2019R3.txt"):
+        # [0:1] to [l:u]
+        x = np.array([t * (lu[1] - lu[0]) + lu[0] for t, lu in zip(x, input_low_upper)])
         with open(name, "w") as f:
             for t in x[:-1]:
-                f.write(t)
+                f.write(str(t))
                 f.write(" [m]\n")
-            f.write(t[-1])
+            f.write(str(x[-1]))
             f.write(" [degree]\n")
 
-    def __readObj(self):
-        ...
+    def __readObj(self, name="~/work/opt/pipe03/output_2019R3.txt") -> np.ndarray:
+        #  [l:u] to [0:1]
+        with open(name, "r") as f:
+            line = f.read()
+            out = line.split("[degree]?n")[1].split(" [C]?n")
+            a = float(out[0])
+            b = float(out[1].split(" [Pa]")[0])
+            y = [
+                (t - lu[0]) / (lu[1] - lu[0]) for t, lu in zip([a, b], output_low_upper)
+            ]
+            return np.array(y)
 
     def f(self, x: np.ndarray, obj: int = 2) -> np.ndarray:
-        ...
+        # input
+        self.__writeDesign(x, "TSK_files/test")
+        # run
+        # output
+        val: np.ndarray = self.__readObj("TSK_files/output_2019R3.txt")
+        return val
