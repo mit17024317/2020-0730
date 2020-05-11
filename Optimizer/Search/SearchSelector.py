@@ -15,7 +15,7 @@ from .Switch import SwitchAlgorithm
 logger = getLogger(__name__)
 
 
-def selectSeachAlgorithm(name: str) -> SearchInterface:
+def selectSeachAlgorithm(name: str, param: dict) -> SearchInterface:
     """
     select Search Interface at using name
 
@@ -33,7 +33,7 @@ def selectSeachAlgorithm(name: str) -> SearchInterface:
     if name == "EHVI":
         return EHVISearch()
     if name == "Repeat":
-        return RepeatAlgorithm()
+        return RepeatAlgorithm(param)
     if name == "parEGO":
         return parEGO()
     if name == "Switch":
