@@ -63,10 +63,12 @@ class Double(Singleton):
         newIndiv: np.ndarray
         af: float
         newIndiv, af = searchAlgorithm.search(popX, popY)
-        self.__output(models, newIndiv)
+        self.__output(models, newIndiv, wsNorm)
         return newIndiv, af
 
-    def __output(self, models, newIndiv):
+    def __output(self, models, newIndiv, ws):
         val = [m.getPredictValue(newIndiv) for m in models]
         for x in val:
+            print(x, end=",")
+        for x in ws:
             print(x, end=",")
