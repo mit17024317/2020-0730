@@ -10,6 +10,9 @@ from typing import List, Tuple
 import numpy as np
 from mypythontools.Design import Singleton
 
+# TODO: searchクラスのインタフェース変更により..Modelを削除
+from ..Models.GPR import GPR
+from ..Models.ModelInterface import BayesianModelInterface
 from .Acquisition.EI import EI
 from .AcquisitionSearch import AcquisitionSearchSingle
 from .EHVISearch import EHVISearch
@@ -45,13 +48,25 @@ class Double(Singleton):
         candidateIndiv: np.ndarray
         candidateIndiv, _ = EHVISearch().search(popX, popY)
 
+        # TODO:seatchの返り値として推測値を得るようにする
+        models: List[BayesianModelInterface] = [
+            GPR(np.array(popX), y) for y in np.transpose(popY)
+        ]
         ws: np.ndarray = np.array(
-            [x / np.sum(candidateIndiv * candidateIndiv) for x in candidateIndiv]
+            [model.getPredictValue(candidateIndiv) for model in models]
         )
-        logger.debug(candidateIndiv)
-        logger.debug(ws)
+        wsNorm: np.ndarray = np.array([x / np.sqrt(np.sum(ws * ws)) for x in ws])
 
         searchAlgorithm: SearchInterface = AcquisitionSearchSingle(
-            EI(), Tchebycheff(), ws
+            EI(), Tchebycheff(), wsNorm
         )
-        return searchAlgorithm.search(popX, popY)
+        newIndiv: np.ndarray
+        af: float
+        newIndiv, af = searchAlgorithm.search(popX, popY)
+        self.__output(models, newIndiv)
+        return newIndiv, af
+
+    def __output(self, models, newIndiv):
+        val = [m.getPredictValue(newIndiv) for m in models]
+        for x in val:
+            print(x, end=",")
