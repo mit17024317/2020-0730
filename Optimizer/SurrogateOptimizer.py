@@ -76,8 +76,7 @@ class SurrogateOptimizer(Singleton):
 
             # search new individual
             newIndiv: np.ndarray
-            af: float
-            newIndiv, af = optMethod.search(popX, popY)
+            newIndiv, _ = optMethod.search(popX, popY)
 
             # evaluate and add new individual
             popX.append(newIndiv)
@@ -89,4 +88,7 @@ class SurrogateOptimizer(Singleton):
             for t in newIndiv:
                 print(t, end=",")
             print()
-            print(hv, af, sep=",", end="\n")
+            print(hv, end=",")
+            for t in prob.f(newIndiv, obj):
+                print(t, end=",")
+            print()
