@@ -61,10 +61,8 @@ class TSK03(Singleton):
                     y.append((val - lu[0]) / (lu[1] - lu[0]))
             return np.array(y)
 
-    def __exe(
-        self, name=probDir"orifice1_200515/wb2019R3_Nakata.sh"
-    ) -> None:
-        os.chdir(probDir+"orifice1_200515")
+    def __exe(self, name=probDir + "orifice1_200515/wb2019R3_Nakata.sh") -> None:
+        os.chdir(probDir + "orifice1_200515")
         subprocess.run(name)
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
