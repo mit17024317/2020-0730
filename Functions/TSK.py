@@ -6,6 +6,7 @@ __date__ = "2020/04/10"
 
 
 import csv
+import os
 import subprocess
 from logging import getLogger
 
@@ -24,11 +25,12 @@ input_low_upper = [
 ]
 # NOTE 圧力最悪値を1000から3000に更新している
 output_low_upper = [[0, 200], [50, 3000]]
+probDir = "/home/kaiseki/work/"
 
 
 class TSK03(Singleton):
     def __writeDesign(
-        self, x: np.ndarray, name="/home/kaiseki/work/orifice1_200515/input_2019R3.txt"
+        self, x: np.ndarray, name=probDir + "orifice1_200515/input_2019R3.txt"
     ):
         # [0:1] to [l:u]
         x = np.array([t * (lu[1] - lu[0]) + lu[0] for t, lu in zip(x, input_low_upper)])
@@ -40,7 +42,7 @@ class TSK03(Singleton):
             f.write(" [degree]\n")
 
     def __readObj(
-        self, name="/home/kaiseki/work/orifice1_200515/output_2019R3.txt"
+        self, name=probDir + "orifice1_200515/output_2019R3.txt"
     ) -> np.ndarray:
         #  [l:u] to [0:1]
         y = []
@@ -60,9 +62,11 @@ class TSK03(Singleton):
             return np.array(y)
 
     def __exe(
-        self, name="/home/kaiseki/work/orifice1_200515/wb2019R3_Nakata.sh"
+        self, name=probDir"orifice1_200515/wb2019R3_Nakata.sh"
     ) -> None:
+        os.chdir(probDir+"orifice1_200515")
         subprocess.run(name)
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     def f(self, x: np.ndarray, obj: int = 2) -> np.ndarray:
         # input
