@@ -8,6 +8,7 @@ from logging import DEBUG, basicConfig, getLogger
 from typing import List, Tuple
 
 import numpy as np
+from mypythontools.Design import Singleton
 
 from Functions.FunctionInterface import FunctionInterface
 from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
@@ -20,34 +21,18 @@ from .Search.SearchSelector import selectSeachAlgorithm
 logger = getLogger(__name__)
 
 
-class SurrogateOptimizer:
+class SurrogateOptimizer(Singleton):
     """
     Surrogate Assisted Multiobjective Evolutionary Alogorithm
-
-    attributes
-    ----------
-    __method: str
-        Optimizer's method name
-
     """
-
-    def __init__(self, method: str, mEval: int = 1000) -> None:
-        """
-        Parameters
-        ----------
-        method: str
-            Optimizer's method name
-        mEval: int
-            evaluation num on surrogate model
-        """
-        self.__method: SearchInterface = selectSeachAlgorithm(method)
-        self.__mEval: int = mEval
 
     def optimize(
         self,
         prob: FunctionInterface,
+        method: str,
         obj: int,
         dim: int,
+        methodParam: dict,
         initialNum: int = 5,
         generations: int = 30,
         initializer: SamplingInterface = LatinHypercubeSampling(),
@@ -59,10 +44,14 @@ class SurrogateOptimizer:
         ----------
         prob: FunctionInterface
             target problem
+        method: str
+            Optimizer's method name
         obj: int
             number of objective
         dim: int
             number ob design variables
+        methodParam: dict
+            parameter of select method
         initialNum: int
             Initial popolation size
         generations: int
@@ -70,7 +59,8 @@ class SurrogateOptimizer:
         initializer: SamplingInterface
             method of Initial Sampling
         """
-        # TODO: 返り値について考える
+
+        optMethod: SearchInterface = selectSeachAlgorithm(method, methodParam)
 
         # Initialize
         popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
@@ -86,8 +76,7 @@ class SurrogateOptimizer:
 
             # search new individual
             newIndiv: np.ndarray
-            af: float
-            newIndiv, af = self.__method.search(popX, popY)
+            newIndiv, _ = optMethod.search(popX, popY)
 
             # evaluate and add new individual
             popX.append(newIndiv)
@@ -99,4 +88,7 @@ class SurrogateOptimizer:
             for t in newIndiv:
                 print(t, end=",")
             print()
-            print(hv, af, sep=",", end="\n")
+            print(hv, end=",")
+            for t in prob.f(newIndiv, obj):
+                print(t, end=",")
+            print()

@@ -10,7 +10,6 @@ from logging import getLogger
 from typing import List, Tuple
 
 import numpy as np
-from mypythontools.Design import Singleton
 
 from Models.GPR import GPR
 from Models.ModelInterface import BayesianModelInterface
@@ -30,7 +29,12 @@ logger = getLogger()
 class Taboo:
     # XXX:グローバル変数
     def __init__(self) -> None:
+        self.setParams(18, 5)
         self.__taboo: deque = deque([])
+
+    def setParams(self, lm: int, ad: int) -> None:
+        self.limit: int = lm
+        self.addSize: int = ad
 
     def __updete(self):
         while len(self.__taboo) > 18:
@@ -54,10 +58,15 @@ class Taboo:
 taboo: Taboo = Taboo()
 
 
-class RepeatAlgorithm(Singleton):
+class RepeatAlgorithm:
     """
     multi acquisition Search algorithm.
     """
+
+    def __init__(self, param: dict) -> None:
+        # XXX: 外部変数の変更
+        taboo.setParams(param["taboo_queue_size"], param["taboo_add_size"])
+        ...
 
     def calculateGoodWeightList(
         self, popX: List[np.ndarray], popY: List[np.ndarray], goodIndiv: np.ndarray

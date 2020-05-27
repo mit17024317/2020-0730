@@ -26,7 +26,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     with open(args[1], "r") as f:
-        logger.debug("-- Input Parameters -- ")
         # input parameters
         parameter = cson.load(f)
 
@@ -38,7 +37,7 @@ if __name__ == "__main__":
         dim: int = parameter["dim"]
         name: str = parameter["problem"]
         method: str = parameter["method"]
-        mEval: int = parameter["mEval"]
+        methodParam = parameter[method]
 
         p: FunctionInterface = selectFunction(name)
 
@@ -46,5 +45,12 @@ if __name__ == "__main__":
         for t in range(trial):
             # optimize start
             logger.info(f"-- start {t} trial optimization --")
-            opt: SurrogateOptimizer = SurrogateOptimizer(method, mEval)
-            opt.optimize(prob=p, obj=obj, dim=dim, initialNum=ini, generations=gen)
+            SurrogateOptimizer().optimize(
+                prob=p,
+                method=method,
+                obj=obj,
+                dim=dim,
+                methodParam=methodParam,
+                initialNum=ini,
+                generations=gen,
+            )

@@ -6,6 +6,7 @@ __date__ = "2020/02/17"
 
 from logging import getLogger
 
+from .Double import Double
 from .EHVISearch import EHVISearch
 from .parEGO import parEGO
 from .Repeat import RepeatAlgorithm
@@ -15,7 +16,7 @@ from .Switch import SwitchAlgorithm
 logger = getLogger(__name__)
 
 
-def selectSeachAlgorithm(name: str) -> SearchInterface:
+def selectSeachAlgorithm(name: str, param: dict) -> SearchInterface:
     """
     select Search Interface at using name
 
@@ -33,11 +34,13 @@ def selectSeachAlgorithm(name: str) -> SearchInterface:
     if name == "EHVI":
         return EHVISearch()
     if name == "Repeat":
-        return RepeatAlgorithm()
+        return RepeatAlgorithm(param)
     if name == "parEGO":
         return parEGO()
     if name == "Switch":
         return SwitchAlgorithm()
+    if name == "Double":
+        return Double()
 
     logger.critical(f'Algotirhm "{name}" is not defined.')
     assert False
