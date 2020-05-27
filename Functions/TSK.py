@@ -5,6 +5,7 @@ __author__ = "R.Nakata"
 __date__ = "2020/04/10"
 
 
+import csv
 import subprocess
 from logging import getLogger
 
@@ -27,7 +28,7 @@ output_low_upper = [[0, 200], [50, 3000]]
 
 class TSK03(Singleton):
     def __writeDesign(
-        self, x: np.ndarray, name="/home/kaiseki/work/opt/pipe03/input_2019R3.txt"
+        self, x: np.ndarray, name="/home/kaiseki/work/orifice1_200515/input_2019R3.txt"
     ):
         # [0:1] to [l:u]
         x = np.array([t * (lu[1] - lu[0]) + lu[0] for t, lu in zip(x, input_low_upper)])
@@ -39,21 +40,27 @@ class TSK03(Singleton):
             f.write(" [degree]\n")
 
     def __readObj(
-        self, name="/home/kaiseki/work/opt/pipe03/output_2019R3.txt"
+        self, name="/home/kaiseki/work/orifice1_200515/output_2019R3.txt"
     ) -> np.ndarray:
         #  [l:u] to [0:1]
+        y = []
         with open(name, "r") as f:
-            line = f.read()
-            out = line.split("[degree]?n")[1].split(" [C]?n")
-            a = float(out[0])
-            b = float(out[1].split(" [Pa]")[0])
-            y = [
-                (t - lu[0]) / (lu[1] - lu[0]) for t, lu in zip([a, b], output_low_upper)
-            ]
+            reader = csv.reader(f)
+            for lineV in reader:
+                line = lineV[0]
+                print(line)
+                if "[C]" in line:
+                    val = float(line.split(" [")[0])
+                    lu = output_low_upper[0]
+                    y.append((val - lu[0]) / (lu[1] - lu[0]))
+                if "[Pa]" in line:
+                    val = float(line.split(" [")[0])
+                    lu = output_low_upper[1]
+                    y.append((val - lu[0]) / (lu[1] - lu[0]))
             return np.array(y)
 
     def __exe(
-        self, name="/home/kaiseki/work/opt/pipe03/wb2019R3CentOS_Nakata.sh"
+        self, name="/home/kaiseki/work/orifice1_200515/wb2019R3_Nakata.sh"
     ) -> None:
         subprocess.run(name)
 
