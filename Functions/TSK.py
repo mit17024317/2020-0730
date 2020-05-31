@@ -16,9 +16,9 @@ from mypythontools.Design import Singleton
 logger = getLogger()
 
 input_low_upper = [
+    [0.02, 0.133],
+    [0.02, 0.133],
     [0, 0.5],
-    [0.02, 0.133],
-    [0.02, 0.133],
     [-0.655, 0.655],
     [-0.655, 0.655],
     [-90, 90],
