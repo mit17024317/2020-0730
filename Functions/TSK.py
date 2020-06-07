@@ -15,16 +15,17 @@ from mypythontools.Design import Singleton
 
 logger = getLogger()
 
+# NOTE 範囲を狭めて制約？を満たしやすくしている
 input_low_upper = [
-    [0.02, 0.133],
-    [0.02, 0.133],
+    [0.05, 0.133],
+    [0.05, 0.133],
     [0, 0.5],
-    [-0.655, 0.655],
-    [-0.655, 0.655],
+    [-0.5, 0.5],
+    [-0.5, 0.5],
     [-90, 90],
 ]
-# NOTE 圧力最悪値を1000から3000に更新している
-output_low_upper = [[0, 200], [50, 3000]]
+# NOTE 圧力最悪値を1000から100000に更新している
+output_low_upper = [[0, 200], [50, 100000]]
 probDir = "/home/kaiseki/work/"
 
 
@@ -50,8 +51,7 @@ class TSK03(Singleton):
             reader = csv.reader(f)
             for lineV in reader:
                 line = lineV[0]
-                print(line)
-                if "[C]" in line:
+                if "[C]" in line or "[K]" in line:
                     val = float(line.split(" [")[0])
                     lu = output_low_upper[0]
                     y.append((val - lu[0]) / (lu[1] - lu[0]))
