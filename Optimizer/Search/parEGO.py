@@ -10,6 +10,7 @@ from typing import List, Tuple
 import numpy as np
 from mypythontools.Design import Singleton
 
+from ..Models.GPR import GPR
 from .Acquisition.EI import EI
 from .AcquisitionSearch import AcquisitionSearchSingle
 from .Scalarization.Tchebycheff import Tchebycheff
@@ -46,4 +47,15 @@ class parEGO(Singleton):
         searchAlgorithm: SearchInterface = AcquisitionSearchSingle(
             EI(), Tchebycheff(), ws
         )
-        return searchAlgorithm.search(popX, popY)
+        newIndiv: np.ndarray
+        af: float
+        newIndiv, af = searchAlgorithm.search(popX, popY)
+        self.__output(popX, popY, newIndiv)
+        return newIndiv, af
+
+    def __output(self, popX, popY, newIndiv):
+        # TODO:seatchの返り値として推測値を得るようにする
+        models = [GPR(np.array(popX), y) for y in np.transpose(popY)]
+        val = [m.getPredictValue(newIndiv) for m in models]
+        for x in val:
+            print(x, end=",")

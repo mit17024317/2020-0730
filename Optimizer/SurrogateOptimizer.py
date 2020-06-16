@@ -11,8 +11,8 @@ import numpy as np
 from mypythontools.Design import Singleton
 
 from Functions.FunctionInterface import FunctionInterface
-from Optimizer.tools.python_mo_util.pymoutils import compute_pyhv
 
+from .Output import OModules
 from .Sampling.LHS import LatinHypercubeSampling
 from .Sampling.SamplingInterface import SamplingInterface
 from .Search.SearchInterface import SearchInterface
@@ -65,10 +65,7 @@ class SurrogateOptimizer(Singleton):
         # Initialize
         popX: List[np.ndarray] = initializer.Sampling(initialNum, dim)
         popY: List[np.ndarray] = [np.array(prob.f(x, obj)) for x in popX]
-        for x in popX:
-            for t in x:
-                print(t, end=",")
-            print()
+        OModules().firstOutput(popX, popY)
 
         # generate and update
         for _ in range(generations):
@@ -81,14 +78,6 @@ class SurrogateOptimizer(Singleton):
             # evaluate and add new individual
             popX.append(newIndiv)
             popY.append(prob.f(newIndiv, obj))
-            hv: float = compute_pyhv(popY, [1.0 for _ in range(obj)])
 
             # output
-            print()
-            for t in newIndiv:
-                print(t, end=",")
-            print()
-            print(hv, end=",")
-            for t in prob.f(newIndiv, obj):
-                print(t, end=",")
-            print()
+            OModules().genOutput(popX, popY)
