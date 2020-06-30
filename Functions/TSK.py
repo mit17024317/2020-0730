@@ -15,7 +15,7 @@ from typing import List
 import numpy as np
 from mypythontools.Design import Singleton
 
-from FunctionInterface import FunctionInterface
+from .FunctionInterface import FunctionInterface
 
 logger = getLogger()
 
@@ -113,7 +113,7 @@ class TSK2(Singleton):
         [0.001, 0.3],
     ]
     units: List[str] = ["m" for _ in range(7)]
-    probDir: str = "orifice2_200515/"
+    probDir: str = "orifice2_200601/"
 
     def f(self, x: np.ndarray, obj) -> np.ndarray:
         if not obj == 2 or not len(x) == 7:
