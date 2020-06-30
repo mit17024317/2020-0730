@@ -8,8 +8,10 @@
 */pyteset_cache/*
 *__pycache__/*
 */.mypy_cache/*
+.mypy_cache/*
 */out/*
 *Result/*
+/_old/*
 
 Parameters/*
 !template.cson
