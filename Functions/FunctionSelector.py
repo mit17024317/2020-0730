@@ -7,7 +7,7 @@ __date__ = "2020/02/04"
 
 from .BenchmarkFunctions import Rastrigin, Rosenbrock, Schwefel
 from .FunctionInterface import FunctionInterface
-from .TSK import TSK03
+from .TSK import TSK1, TSK2
 from .WFG import WFG1, WFG2, WFG3, WFG4, WFG5, WFG6, WFG7, WFG8, WFG9
 from .ZDT import ZDT4, ZDT6
 
@@ -26,8 +26,10 @@ def selectFunction(name: str) -> FunctionInterface:
     Function class: FunctionInterface
         Function class corresponding to the name
     """
-    if name == "TSK":
-        return TSK03()
+    if name == "TSK1":
+        return TSK1()
+    if name == "TSK2":
+        return TSK2()
     if name == "Rastrigin":
         return Rastrigin()
     if name == "Rosenbrock":

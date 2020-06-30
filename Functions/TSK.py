@@ -37,7 +37,7 @@ class TSK:
         x = np.array(
             [t * (lu[1] - lu[0]) + lu[0] for t, lu in zip(x, self.input_low_upper)]
         )
-        writeFile = simulatorDir + self.probDir + "input_2019R3.txt"
+        writeFile = self.simulatorDir + self.probDir + "input_2019R3.txt"
         with open(writeFile, "w") as f:
             for t, u in zip(x, self.units):
                 f.write(str(t))
@@ -46,7 +46,7 @@ class TSK:
     def __readObj(self) -> np.ndarray:
         #  [l:u] to [0:1]
         y = []
-        readFile = simulatorDir + self.probDir + "output_2019R3.txt"
+        readFile = self.simulatorDir + self.probDir + "output_2019R3.txt"
         with open(readFile, "r") as f:
             reader = csv.reader(f)
             for lineV in reader:
@@ -62,8 +62,8 @@ class TSK:
             return np.array(y)
 
     def __exe(self) -> None:
-        os.chdir(simulatorDir + self.probDir)
-        sh: str = simulatorDir + self.probDir + "wb2019R3_Nakata.sh"
+        os.chdir(self.simulatorDir + self.probDir)
+        sh: str = self.simulatorDir + self.probDir + "wb2019R3_Nakata.sh"
         subprocess.run(sh)
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -77,7 +77,7 @@ class TSK:
         return val
 
 
-class TSK03(Singleton):
+class TSK1(Singleton):
 
     input_low_upper: List[List[float]] = [
         [0.02, 0.133],
@@ -92,8 +92,33 @@ class TSK03(Singleton):
 
     def f(self, x: np.ndarray, obj) -> np.ndarray:
         if not obj == 2 or not len(x) == 6:
-            logger.critical("#obj must be 2 on TSK03 problems")
-            logger.critical("#dim must be 6 on TSK03 problems")
+            logger.critical("#obj must be 2 on TSK1 problems")
+            logger.critical("#dim must be 6 on TSK1 problems")
+            logger.critical("--- forced termination ---")
+            sys.exit()
+        tsk: FunctionInterface = TSK(self.probDir, self.input_low_upper, self.units)
+        val: np.ndarray = tsk.f(x, obj)
+        return val
+
+
+class TSK2(Singleton):
+
+    input_low_upper: List[List[float]] = [
+        [0, 0.5],
+        [0.001, 0.3],
+        [0.001, 0.3],
+        [0.001, 0.3],
+        [0.001, 0.3],
+        [0.001, 0.3],
+        [0.001, 0.3],
+    ]
+    units: List[str] = ["m" for _ in range(7)]
+    probDir: str = "orifice2_200515/"
+
+    def f(self, x: np.ndarray, obj) -> np.ndarray:
+        if not obj == 2 or not len(x) == 7:
+            logger.critical("#obj must be 2 on TSK2 problems")
+            logger.critical("#dim must be 7 on TSK2 problems")
             logger.critical("--- forced termination ---")
             sys.exit()
         tsk: FunctionInterface = TSK(self.probDir, self.input_low_upper, self.units)
@@ -104,9 +129,8 @@ class TSK03(Singleton):
 if __name__ == "__main__":
     basicConfig(level=DEBUG)
 
-    simulatorDir = ""
     x = np.array([0.3 for _ in range(6)])
 
-    t = TSK03()
+    t = TSK1()
     val = t.f(x, 2)
     logger.debug(val)
