@@ -19,12 +19,12 @@ from FunctionInterface import FunctionInterface
 
 logger = getLogger()
 
-# NOTE 圧力最悪値を大きめに取っているつもりだが，これ以上の値も出得る
-output_low_upper = [[0, 200], [50, 100000]]
-simulatorDir = "/home/kaiseki/work/"
-
 
 class TSK:
+    # NOTE 圧力最悪値を大きめに取っているつもりだが，これ以上の値も出得る
+    output_low_upper = [[0, 200], [50, 100000]]
+    simulatorDir = "/home/kaiseki/work/"
+
     def __init__(
         self, probDir: str, input_low_upper: List[List[float]], units: List[str]
     ) -> None:
@@ -39,11 +39,9 @@ class TSK:
         )
         writeFile = simulatorDir + self.probDir + "input_2019R3.txt"
         with open(writeFile, "w") as f:
-            for t in x[:-1]:
+            for t, u in zip(x, self.units):
                 f.write(str(t))
-                f.write(" [m]\n")
-            f.write(str(x[-1]))
-            f.write(" [degree]\n")
+                f.write(f" [{u}]\n")
 
     def __readObj(self) -> np.ndarray:
         #  [l:u] to [0:1]
@@ -55,11 +53,11 @@ class TSK:
                 line = lineV[0]
                 if "[C]" in line or "[K]" in line:
                     val = float(line.split(" [")[0])
-                    lu = output_low_upper[0]
+                    lu = self.output_low_upper[0]
                     y.append((val - lu[0]) / (lu[1] - lu[0]))
                 if "[Pa]" in line:
                     val = float(line.split(" [")[0])
-                    lu = output_low_upper[1]
+                    lu = self.output_low_upper[1]
                     y.append((val - lu[0]) / (lu[1] - lu[0]))
             return np.array(y)
 
@@ -73,11 +71,10 @@ class TSK:
         # input
         self.__writeDesign(x)
         # run
-        # self.__exe()
+        self.__exe()
         # output
-        # val: np.ndarray = self.__readObj()
-        return x
-        # return val
+        val: np.ndarray = self.__readObj()
+        return val
 
 
 class TSK03(Singleton):
@@ -90,8 +87,8 @@ class TSK03(Singleton):
         [-0.0665, 0.0665],
         [-90, 90],
     ]
-    units: List[str] = ["[m]" for _ in range(5)] + ["[degree]"]
-    probDir: str = "orifice1_200515"
+    units: List[str] = ["m" for _ in range(5)] + ["degree"]
+    probDir: str = "orifice1_200515/"
 
     def f(self, x: np.ndarray, obj) -> np.ndarray:
         if not obj == 2 or not len(x) == 6:
@@ -99,8 +96,7 @@ class TSK03(Singleton):
             logger.critical("#dim must be 6 on TSK03 problems")
             logger.critical("--- forced termination ---")
             sys.exit()
-        # TODO: デバグが終わったらディレクトリネームを直す
-        tsk: FunctionInterface = TSK("Functions/", self.input_low_upper, self.units)
+        tsk: FunctionInterface = TSK(self.probDir, self.input_low_upper, self.units)
         val: np.ndarray = tsk.f(x, obj)
         return val
 
